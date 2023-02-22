@@ -33,7 +33,7 @@ public class Client {
             socket = new Socket(host, port);
             System.out.println("Client connected to server");
         } catch (IllegalArgumentException e) {
-           throw new IllegalArgumentException("Proxy has invalid type or null:\n"+e.getMessage());
+            throw new IllegalArgumentException("Proxy has invalid type or null:\n"+e.getMessage());
         } catch (SecurityException e) {
             throw new SecurityException("Connection to the proxy denied for security reasons:\n"+e.getMessage());
         } catch (UnknownHostException e) {
@@ -55,13 +55,9 @@ public class Client {
         Create a new GameClient class and call the game execution.
          */
 
-        try {
-            DataOutputStream data_stream = new DataOutputStream(socket.getOutputStream());
-            data_stream.writeUTF(message);
-            data_stream.flush();
-            data_stream.close();
-        } catch (IOException e) {
-            throw new RuntimeException("I/O Error when creating or sending the output stream. Is the host connected?:\n"+e.getMessage());
-        }
+        GameClient gameClient = new GameClient();
+        gameClient.play(socket, message);
+
+
     }
 }

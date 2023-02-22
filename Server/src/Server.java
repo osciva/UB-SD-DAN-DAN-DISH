@@ -53,17 +53,10 @@ public class Server {
             throw new RuntimeException("There is no connection ready to be accepted:\n"+e.getMessage());
         }
 
-        String message = null;
+        //Creating a new GameHandler for every client.
+        GameHandler gh = new GameHandler(socket);
+        gh.start();
 
-        try {
-            DataInputStream data_input = new DataInputStream(socket.getInputStream());
-            message = data_input.readUTF();
-            System.out.println("The client send the following message:\n"+message);
-            ss.close();
-            data_input.close();
-        } catch (IOException e) {
-            throw new RuntimeException("I/O Error when reading the client's message:\n"+e.getMessage());
-        }
 
     }
 }
