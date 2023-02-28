@@ -3,7 +3,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-
 public class GameClient {
 
     /*
@@ -11,19 +10,20 @@ public class GameClient {
     Class that encapsulates the game's logic. Sequence of states following the established protocol .
      */
 
-    public void play(Socket socket, String message) {
+    public void play(Socket socket, String message, int id) {
 
-        try {
-            DataOutputStream data_stream = new DataOutputStream(socket.getOutputStream());
-            data_stream.writeUTF(message);
-            data_stream.flush();
-            data_stream.close();
-        } catch (IOException e) {
-            throw new RuntimeException("I/O Error when creating or sending the output stream. Is the host connected?:\n"+e.getMessage());
-        }
+            //DataOutputStream data_stream = new DataOutputStream(socket.getOutputStream());
+            //data_stream.writeUTF(message);
+            //data_stream.write(id);
+            ClientProtocol cp = new ClientProtocol(socket);
+            cp.sendHello(socket, (byte)1, id, message);
+            //data_stream.flush();
+            //data_stream.close();
 
         // Add game execution logic here
     }
+
+    
 
 
 

@@ -24,11 +24,11 @@ public class GameHandler extends Thread {
 
         String message = null;
         try {
-            DataInputStream data_input = new DataInputStream(socket.getInputStream());
+            play();
+            /*DataInputStream data_input = new DataInputStream(socket.getInputStream());
             message = data_input.readUTF();
             System.out.println("The client send the following message:\n" + message);
-
-            data_input.close();
+            data_input.close();*/
             socket.close();
         } catch (IOException e) {
             throw new RuntimeException("I/O Error when reading the client's message:\n" + e.getMessage());
@@ -38,6 +38,9 @@ public class GameHandler extends Thread {
     }
 
     public void play(){
-
+         GameProtocol gh = new GameProtocol(socket);
     }
+
+
+
 }

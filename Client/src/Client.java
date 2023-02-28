@@ -43,12 +43,16 @@ public class Client {
         }
 
         String message = "";
+        int id = 0;
         Scanner sc = new Scanner(System.in);
 
         while (message.isEmpty()) {
-            System.out.println("Write the message to be sent to the server instance:\n");
+            System.out.println("Write the message to be sent to the server instance:");
             message = sc.nextLine();
+            System.out.println("and the int:");
+            id = sc.nextInt();
         }
+
 
         /*
         TO DO
@@ -56,7 +60,7 @@ public class Client {
          */
 
         GameClient gameClient = new GameClient();
-        gameClient.play(socket, message);
+        gameClient.play(socket,message, id);
 
 
     }
