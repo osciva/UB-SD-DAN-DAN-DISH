@@ -14,8 +14,20 @@ public class GameProtocol {
     public void recivedHello(Socket socket) throws IOException {
         DataInputStream data_inPut = new DataInputStream(socket.getInputStream());
         byte opCode = data_inPut.readByte();
+        System.out.println("The client send the following opCode:\n" + opCode);
         int id = data_inPut.readInt();
-        String name = data_inPut.readLine();
+        //int length = data_inPut.readInt();
+        char a = 'p';
+        String name = "";
+        while(a!=0) {
+             int e = data_inPut.readChar();
+             name += (char) e;
+             a = (char) e;
+        }
+        //HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
+
+
+
         byte[] buffer = new byte[0];
         data_inPut.readFully(buffer); // o data_inPut.readyFully(byte[] buffer);
         System.out.println("The client send the following message:\n" + opCode + id +name+ buffer);
