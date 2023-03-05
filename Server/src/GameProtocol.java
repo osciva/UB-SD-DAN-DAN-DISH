@@ -14,18 +14,31 @@ public class GameProtocol {
     public void recivedHello(Socket socket) throws IOException {
         DataInputStream data_inPut = new DataInputStream(socket.getInputStream());
         byte opCode = data_inPut.readByte();
+        System.out.println("The client send the following opCode:\n" + opCode);
         int id = data_inPut.readInt();
-        String name = data_inPut.readLine();
-        byte[] buffer = new byte[0];
-        data_inPut.readFully(buffer); // o data_inPut.readyFully(byte[] buffer);
-        System.out.println("The client send the following message:\n" + opCode + id +name+ buffer);
+        System.out.println("The client send the following int:\n" + id);
+        int a = 1;
+        String name = "";
+        while(a!=48) {
+             char e = data_inPut.readChar();
+             if(e != 48) {
+                 name += (char) e;
+             }
+             a = e;
+        }
+        System.out.println("The client send the following name:\n" + name);
 
+        //HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
+        byte primer = (byte) data_inPut.read();
+        byte segon = (byte) data_inPut.read();
+        System.out.println("The client send the following bytes:\n" + primer + segon);
+ç
         if (opCode != 1) {
             byte error = 4;
             //String msg = "INICI DE SESSIÓ INCORRECTE";
             sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); //msg);
         }
-        System.out.println("The client send the following message:\n" + opCode + id + name + buffer);
+        //System.out.println("The client send the following message:\n" + opCode + id + name + buffer);
         data_inPut.close();
     }
 
