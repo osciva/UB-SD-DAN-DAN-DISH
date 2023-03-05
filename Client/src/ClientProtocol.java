@@ -1,6 +1,7 @@
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class ClientProtocol {
     private Socket socket;
@@ -15,15 +16,13 @@ public class ClientProtocol {
             byte[] buffer = {0, 0};
             data_outPut.writeByte(opCode); // Capçalera, serà un 1, perque es el HELLO
             data_outPut.writeInt(id);
-
-            data_outPut.writeChars(name); // Longitud sense limit //FALLA A PARTIR DE  AQUI Y NO SE PORQUE AUN CREO PORQUE EN EL DATA OTUPUT SE DEBE ENVIAR COMO TOODO EN UNA LISTA O ALGO PERO SOLO PERMITE ESCRIBIR UNA COSA
-
-            //data_outPut.flush();
+            for (int i = 0; i < name.length(); i++) {
+                char p = name.charAt(i);
+                data_outPut.writeChar(p);
+            }
+            data_outPut.writeChar('0');
             data_outPut.write(0); // Indica el final de trama
             data_outPut.write(0); // Indica el final de trama
-            //data_outPut.flush();
-
-
             data_outPut.flush();
             // data_outPut.close();
         } catch (IOException e) {
