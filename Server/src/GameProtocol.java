@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class GameProtocol {
-    private Socket socket;
+     private Socket socket;
     
      public GameProtocol(Socket socket) {
         
@@ -32,7 +32,7 @@ public class GameProtocol {
         byte primer = (byte) data_inPut.read();
         byte segon = (byte) data_inPut.read();
         System.out.println("The client send the following bytes:\n" + primer + segon);
-ç
+
         if (opCode != 1) {
             byte error = 4;
             //String msg = "INICI DE SESSIÓ INCORRECTE";
