@@ -1,5 +1,3 @@
-package Utils;
-
 import java.io.IOException;
 import java.io.DataOutputStream;
 import java.io.DataInputStream;
@@ -8,15 +6,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.io.ByteArrayOutputStream;
 
 
-
-import java.io.*;
-
-
 public class util {
+
 
     /* Objectes per escriure i llegir dades */
     private DataInputStream dis;
@@ -63,10 +57,11 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
     public int readInt() throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.put(readBytes(dis, Integer.BYTES));
+        buffer.put(readBytes(dis));
         buffer.flip();
         return buffer.getInt();
     }
+
 
     /* Escriure un enter */
     public void writeInt(int number) throws IOException {
@@ -78,12 +73,12 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
     /*LLegir un string, 48 = 0 en ASCII
-    * Fins que no hi hagi un char amb valor en ascii 48 (=0) segueix llegint*/
-    public String read_string() throws IOException {
+     * Fins que no hi hagi un char amb valor en ascii 48 (=0) segueix llegint*/
+    public void read_string() throws IOException {
         int a = 1;
         String name = "";
         while(a!=48) {
-            char e = data_inPut.readChar();
+            char e = dis.readChar();
             if(e != 48) {
                 name += (char) e;
             }
@@ -130,10 +125,11 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
         byte[] buffer = new byte[1024];
         int bytesRead;
         while ((bytesRead = dis.read(buffer)) != -1) {
-            dos.write(buffer, 0, bytesRead);
+            outputStream.write(buffer, 0, bytesRead);
         }
-        return dos.toByteArray();
+        return outputStream.toByteArray();
     }
+
 
     public static void writeBytes(DataOutputStream dos, byte[] data) throws IOException {
         dos.write(data);
@@ -143,6 +139,7 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
     public static String readAction(InputStream input) throws IOException {
         //return read_string(input);
+        return null;
     }
 
     public static void writeAction(OutputStream output, String action) throws IOException {

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class GameProtocol {
+     private util utilitat;
+
      private Socket socket;
     
      public GameProtocol(Socket socket) {
@@ -19,6 +21,7 @@ public class GameProtocol {
         System.out.println("The client send the following int:\n" + id);
         int a = 1;
         String name = "";
+
         while(a!=48) {
              char e = data_inPut.readChar();
              if(e != 48) {
