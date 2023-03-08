@@ -60,7 +60,11 @@ public class Client {
          */
 
         GameClient gameClient = new GameClient();
-        gameClient.play(socket,message, id);
+        try {
+            gameClient.play(socket,message, id);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }

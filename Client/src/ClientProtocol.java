@@ -1,7 +1,7 @@
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class ClientProtocol {
     private Socket socket;
@@ -30,9 +30,55 @@ public class ClientProtocol {
         }
 
     }
+    
+    public boolean recivedReady(Socket socket) {
 
-    public void recivedHello(Socket socket) {
+        return false;
+    }
+    public void sendPlay(Socket socket) {
+
+    }
+    public boolean recivedAdmit(Socket socket) {
+
+        return false;
+    }
+    public void sendAction(Socket socket) {
+
+    }
+    public boolean recivedResult(Socket socket) {
+
+        return false;
+    }
+    public void finalGame(Socket socket) {
 
     }
 
+    public boolean recivedError(Socket socket){
+        DataInputStream data_inPut = null;
+        try {
+            data_inPut = new DataInputStream(socket.getInputStream());
+            byte opCode = data_inPut.readByte();
+            System.out.println("The opCpde it's bad:\n" + opCode);
+            byte error = data_inPut.readByte();
+            System.out.println("The client has the following error number:\n" + error);
+            int a = 1;
+            String name = "";
+            while(a!=48) {
+                char e = data_inPut.readChar();
+                if(e != 48) {
+                    name += (char) e;
+                }
+                a = e;
+            }
+            System.out.println("The client has the following message of error:\n" + name);
+
+            //HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
+            byte primer = (byte) data_inPut.read();
+            byte segon = (byte) data_inPut.read();
+            System.out.println("The client has the following bytes:\n" + primer + segon);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
 }
