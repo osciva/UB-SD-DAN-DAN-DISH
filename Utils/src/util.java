@@ -28,14 +28,17 @@ public class util {
     public DataInputStream getDis() {
         return dis;
     }
+
     //setter del data input stream
     public void setDis(DataInputStream dis) {
         this.dis = dis;
     }
+
     //getter del data output stream
     public DataOutputStream getDos() {
         return dos;
     }
+
     //getter del data output stream
     public void setDos(DataOutputStream dos) {
         this.dos = dos;
@@ -54,27 +57,20 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
     /* Llegir un enter */
-    public int readInt() throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.put(readBytes(dis));
-        buffer.flip();
-        return buffer.getInt();
+    public int llegirInt(DataInputStream dis) throws IOException {
+        return dis.readInt();
     }
 
 
     /* Escriure un enter */
-    public void writeInt(int number) throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.putInt(number);
-        writeBytes(dos, buffer.array());
+    public void writeInt(DataOutputStream dos, int number) throws IOException {
+        dos.writeInt(number);
     }
 
 
     /*LLegir un string, 48 = 0 en ASCII
      * Fins que no hi hagi un char amb valor en ascii 48 (=0) segueix llegint*/
-    public void read_string() throws IOException {
+    public String llegirString(DataInputStream dis) throws IOException {
         int a = 1;
         String name = "";
         while(a!=48) {
@@ -84,13 +80,14 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
             }
             a = e;
         }
-        System.out.println("The client send the following String:\n" + name);
+        return name;
 
     }
 
+
     /*Escriure un string*/
 
-    public void write_string(int headerLength, String stringData) throws IOException {
+    public void escriureString(DataOutputStream dos, int headerLength, String stringData) throws IOException {
         byte[] headerBytes = new byte[headerLength];
         String headerString;
         int stringLength = 0;
@@ -120,30 +117,44 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
 
-    public static byte[] readBytes(DataInputStream dis) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = dis.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-        return outputStream.toByteArray();
+
+    //llegir 1 byte
+    public static byte llegirByte(DataInputStream dis) throws IOException {
+        return dis.readByte();
+    }
+
+    //escriure 1 byte
+    public void escriureByte(DataOutputStream dos, int opcode) throws IOException {
+        dos.writeByte(opcode);
     }
 
 
+    //escriure varis bytes
     public static void writeBytes(DataOutputStream dos, byte[] data) throws IOException {
         dos.write(data);
         dos.flush();
     }
 
+    //llegir UTF
+    public String llegirUTF(DataInputStream dis) throws IOException {
+        return dis.readUTF();
 
-    public static String readAction(InputStream input) throws IOException {
-        //return read_string(input);
-        return null;
+    }
+    //escriure en UTF
+    public void escriureUTF(DataOutputStream dos, String message) throws IOException {
+        dos.writeUTF(message);
+
     }
 
-    public static void writeAction(OutputStream output, String action) throws IOException {
-        //write_string(output, action);
+    //llegir la acció
+    public String llegirAction(DataInputStream dis) throws IOException {
+        return llegirString(dis);
+
+    }
+
+    //escriure la acció
+    public void escriureAction(DataOutputStream dos, int headerLength, String action) throws IOException {
+        escriureString(dos, headerLength, action);
     }
 
 }
