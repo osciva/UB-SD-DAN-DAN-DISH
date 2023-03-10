@@ -39,7 +39,7 @@ public class util {
         return dos;
     }
 
-    //getter del data output stream
+    //setter del data output stream
     public void setDos(DataOutputStream dos) {
         this.dos = dos;
     }
@@ -57,12 +57,15 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
     /* Llegir un enter */
+
     public int llegirInt(DataInputStream dis) throws IOException {
         return dis.readInt();
+
     }
 
 
     /* Escriure un enter */
+
     public void writeInt(DataOutputStream dos, int number) throws IOException {
         dos.writeInt(number);
     }
@@ -70,7 +73,9 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
     /*LLegir un string, 48 = 0 en ASCII
      * Fins que no hi hagi un char amb valor en ascii 48 (=0) segueix llegint*/
+
     public String llegirString(DataInputStream dis) throws IOException {
+
         int a = 1;
         String name = "";
         while(a!=48) {
@@ -80,6 +85,7 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
             }
             a = e;
         }
+
         return name;
 
     }
@@ -88,6 +94,8 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
     /*Escriure un string*/
 
     public void escriureString(DataOutputStream dos, int headerLength, String stringData) throws IOException {
+
+
         byte[] headerBytes = new byte[headerLength];
         String headerString;
         int stringLength = 0;
@@ -118,6 +126,7 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
 
+
     //llegir 1 byte
     public static byte llegirByte(DataInputStream dis) throws IOException {
         return dis.readByte();
@@ -130,6 +139,7 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
     //escriure varis bytes
+
     public static void writeBytes(DataOutputStream dos, byte[] data) throws IOException {
         dos.write(data);
         dos.flush();
@@ -138,18 +148,16 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
     //llegir UTF
     public String llegirUTF(DataInputStream dis) throws IOException {
         return dis.readUTF();
-
     }
+    
     //escriure en UTF
     public void escriureUTF(DataOutputStream dos, String message) throws IOException {
         dos.writeUTF(message);
-
     }
 
     //llegir la acció
     public String llegirAction(DataInputStream dis) throws IOException {
         return llegirString(dis);
-
     }
 
     //escriure la acció

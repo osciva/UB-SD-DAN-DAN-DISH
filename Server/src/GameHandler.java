@@ -14,36 +14,46 @@ public class GameHandler extends Thread {
         this.socket = socket;
     }
 
-
-    public void init(){
+    public void init() {
 
     }
 
     @Override
     public void run() {
-    
-        while(true){
+
+        while (true) {
             String message = null;
             try {
                 play();
-                /*DataInputStream data_input = new DataInputStream(socket.getInputStream());
-                message = data_input.readUTF();
-                System.out.println("The client send the following message:\n" + message);
-                data_input.close();*/
+                /*
+                 * DataInputStream data_input = new DataInputStream(socket.getInputStream());
+                 * message = data_input.readUTF();
+                 * System.out.println("The client send the following message:\n" + message);
+                 * data_input.close();
+                 */
                 break;
             } catch (IOException e) {
                 throw new RuntimeException("I/O Error when reading the client's message:\n" + e.getMessage());
             }
         }
 
-
     }
 
     public void play() throws IOException {
-         GameProtocol gh = new GameProtocol(socket);
-         gh.recivedHello(socket);
+        GameProtocol gh = new GameProtocol(socket);
+        // gh.recivedHello(socket);
+        if (gh.recivedHello(socket)) {
+            gh.sendReady(socket);
+        }
+        if (gh.recivedPlay(socket)) {
+            gh.sendAdmit(socket);
+        }
+        if (gh.recivedAction(socket)) {
+            gh.sendResult(socket);
+        }
+        if (gh.recivedError(socket)) {
+            System.out.println("Final del juego por error");
+        }
     }
-
-
 
 }
