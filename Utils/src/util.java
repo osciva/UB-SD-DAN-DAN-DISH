@@ -58,28 +58,37 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
     /* Llegir un enter */
 
-    public int llegirInt(DataInputStream dis) throws IOException {
-        return dis.readInt();
+    public int llegirInt() throws IOException {
+        return this.dis.readInt();
 
     }
 
 
     /* Escriure un enter */
 
-    public void writeInt(DataOutputStream dos, int number) throws IOException {
-        dos.writeInt(number);
+    public void escriureInt(int number) throws IOException {
+        this.dos.writeInt(number);
     }
 
+    //llegir 1 char
+    public char llegirChar() throws IOException {
+        return this.dis.readChar();
+    }
+
+    //escriure 1 char
+    public void escriureChar( char caracter) throws IOException {
+        this.dos.writeChar(caracter);
+    }
 
     /*LLegir un string, 48 = 0 en ASCII
      * Fins que no hi hagi un char amb valor en ascii 48 (=0) segueix llegint*/
 
-    public String llegirString(DataInputStream dis) throws IOException {
+    public String llegirString() throws IOException {
 
         int a = 1;
         String name = "";
         while(a!=48) {
-            char e = dis.readChar();
+            char e = this.dis.readChar();
             if(e != 48) {
                 name += (char) e;
             }
@@ -93,7 +102,7 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
     /*Escriure un string*/
 
-    public void escriureString(DataOutputStream dos, int headerLength, String stringData) throws IOException {
+    public void escriureString( int headerLength, String stringData) throws IOException {
 
 
         byte[] headerBytes = new byte[headerLength];
@@ -117,10 +126,10 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
         }
 
         // Se envia la cabecera
-        dos.write(headerBytes, 0, headerLength);
+        this.dos.write(headerBytes, 0, headerLength);
 
         // se enviar la cadena usando writeBytes
-        dos.writeBytes(stringData);
+        this.dos.writeBytes(stringData);
     }
 
 
@@ -128,41 +137,45 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
     //llegir 1 byte
-    public static byte llegirByte(DataInputStream dis) throws IOException {
-        return dis.readByte();
+    public byte llegirByte() throws IOException {
+
+        return this.dis.readByte();
     }
 
     //escriure 1 byte
-    public void escriureByte(DataOutputStream dos, int opcode) throws IOException {
-        dos.writeByte(opcode);
+    public void escriureByte( byte opcode) throws IOException {
+        this.dos.writeByte(opcode);
     }
 
+    public void ferFlush() throws IOException {
+        this.dos.flush();
+    }
 
     //escriure varis bytes
 
-    public static void writeBytes(DataOutputStream dos, byte[] data) throws IOException {
-        dos.write(data);
-        dos.flush();
+    public void writeBytes(byte[] data) throws IOException {
+        this.dos.write(data);
+        this.dos.flush();
     }
 
     //llegir UTF
-    public String llegirUTF(DataInputStream dis) throws IOException {
-        return dis.readUTF();
+    public String llegirUTF() throws IOException {
+        return this.dis.readUTF();
     }
     
     //escriure en UTF
-    public void escriureUTF(DataOutputStream dos, String message) throws IOException {
-        dos.writeUTF(message);
+    public void escriureUTF( String message) throws IOException {
+        this.dos.writeUTF(message);
     }
 
     //llegir la acció
-    public String llegirAction(DataInputStream dis) throws IOException {
-        return llegirString(dis);
+    public String llegirAction() throws IOException {
+        return llegirString();
     }
 
     //escriure la acció
-    public void escriureAction(DataOutputStream dos, int headerLength, String action) throws IOException {
-        escriureString(dos, headerLength, action);
+    public void escriureAction( int headerLength, String action) throws IOException {
+        escriureString(headerLength, action);
     }
 
 }

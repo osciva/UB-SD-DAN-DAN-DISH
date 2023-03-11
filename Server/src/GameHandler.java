@@ -49,7 +49,7 @@ public class GameHandler extends Thread {
             gh.sendAdmit(socket);
         }
         if (gh.recivedAction(socket)) {
-            gh.sendResult(socket);
+            gh.sentResult(socket);
         }
         if (gh.recivedError(socket)) {
             System.out.println("Final del juego por error");
