@@ -28,15 +28,18 @@ public class util {
     public DataInputStream getDis() {
         return dis;
     }
+
     //setter del data input stream
     public void setDis(DataInputStream dis) {
         this.dis = dis;
     }
+
     //getter del data output stream
     public DataOutputStream getDos() {
         return dos;
     }
-    //getter del data output stream
+
+    //setter del data output stream
     public void setDos(DataOutputStream dos) {
         this.dos = dos;
     }
@@ -54,43 +57,54 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
 
     /* Llegir un enter */
-    public int readInt() throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.put(readBytes(dis));
-        buffer.flip();
-        return buffer.getInt();
+
+    public int llegirInt() throws IOException {
+        return this.dis.readInt();
+
     }
 
 
     /* Escriure un enter */
-    public void writeInt(int number) throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.order(ByteOrder.BIG_ENDIAN);
-        buffer.putInt(number);
-        writeBytes(dos, buffer.array());
+
+    public void escriureInt(int number) throws IOException {
+        this.dos.writeInt(number);
     }
 
+    //llegir 1 char
+    public char llegirChar() throws IOException {
+        return this.dis.readChar();
+    }
+
+    //escriure 1 char
+    public void escriureChar( char caracter) throws IOException {
+        this.dos.writeChar(caracter);
+    }
 
     /*LLegir un string, 48 = 0 en ASCII
      * Fins que no hi hagi un char amb valor en ascii 48 (=0) segueix llegint*/
-    public void read_string() throws IOException {
+
+    public String llegirString() throws IOException {
+
         int a = 1;
         String name = "";
         while(a!=48) {
-            char e = dis.readChar();
+            char e = this.dis.readChar();
             if(e != 48) {
                 name += (char) e;
             }
             a = e;
         }
-        System.out.println("The client send the following String:\n" + name);
+
+        return name;
 
     }
 
+
     /*Escriure un string*/
 
-    public void write_string(int headerLength, String stringData) throws IOException {
+    public void escriureString( int headerLength, String stringData) throws IOException {
+
+
         byte[] headerBytes = new byte[headerLength];
         String headerString;
         int stringLength = 0;
@@ -112,38 +126,56 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
         }
 
         // Se envia la cabecera
-        dos.write(headerBytes, 0, headerLength);
+        this.dos.write(headerBytes, 0, headerLength);
 
         // se enviar la cadena usando writeBytes
-        dos.writeBytes(stringData);
+        this.dos.writeBytes(stringData);
     }
 
 
 
-    public static byte[] readBytes(DataInputStream dis) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = dis.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
-        }
-        return outputStream.toByteArray();
+
+
+    //llegir 1 byte
+    public byte llegirByte() throws IOException {
+
+        return this.dis.readByte();
     }
 
-
-    public static void writeBytes(DataOutputStream dos, byte[] data) throws IOException {
-        dos.write(data);
-        dos.flush();
+    //escriure 1 byte
+    public void escriureByte( byte opcode) throws IOException {
+        this.dos.writeByte(opcode);
     }
 
-
-    public static String readAction(InputStream input) throws IOException {
-        //return read_string(input);
-        return null;
+    public void ferFlush() throws IOException {
+        this.dos.flush();
     }
 
-    public static void writeAction(OutputStream output, String action) throws IOException {
-        //write_string(output, action);
+    //escriure varis bytes
+
+    public void writeBytes(byte[] data) throws IOException {
+        this.dos.write(data);
+        this.dos.flush();
+    }
+
+    //llegir UTF
+    public String llegirUTF() throws IOException {
+        return this.dis.readUTF();
+    }
+    
+    //escriure en UTF
+    public void escriureUTF( String message) throws IOException {
+        this.dos.writeUTF(message);
+    }
+
+    //llegir la acció
+    public String llegirAction() throws IOException {
+        return llegirString();
+    }
+
+    //escriure la acció
+    public void escriureAction( int headerLength, String action) throws IOException {
+        escriureString(headerLength, action);
     }
 
 }

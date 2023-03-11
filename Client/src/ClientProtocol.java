@@ -8,12 +8,14 @@ public class ClientProtocol {
     private int id;
     private DataOutputStream data_outPut;
     private DataInputStream data_inPut;
+    private util utilitat;
 
     public ClientProtocol(Socket socket) {
         this.socket = socket;
         try {
             data_outPut = new DataOutputStream(socket.getOutputStream());
             data_inPut = new DataInputStream(socket.getInputStream());
+            utilitat = new util(socket);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -21,16 +23,16 @@ public class ClientProtocol {
 
     public void sendHello(Socket socket, byte opCode, int id, String name) {
         try {
-            data_outPut.writeByte(opCode); // Capçalera, serà un 1, perque es el HELLO
-            data_outPut.writeInt(id);
+            utilitat.escriureByte((opCode)); // Capçalera, serà un 1, perque es el HELLO
+            utilitat.escriureInt(id);
             for (int i = 0; i < name.length(); i++) {
                 char p = name.charAt(i);
                 data_outPut.writeChar(p);
             }
-            data_outPut.writeChar('0');
-            data_outPut.write(0); // Indica el final de trama
-            data_outPut.write(0); // Indica el final de trama
-            data_outPut.flush();
+            utilitat.escriureChar('0');
+            utilitat.escriureByte((byte)0); // Indica el final de trama
+            utilitat.escriureByte((byte)0); // Indica el final de trama
+            utilitat.ferFlush();
             // data_outPut.close();
         } catch (IOException e) {
             throw new RuntimeException(
@@ -41,7 +43,7 @@ public class ClientProtocol {
 
     public boolean recivedReady(Socket socket) {
         try {
-            byte opCode = data_inPut.readByte();
+            byte opCode = utilitat.llegirByte();
             if (opCode != 2) {
                 byte error = 4;
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
@@ -50,7 +52,7 @@ public class ClientProtocol {
                 return false;
             } else {
                 System.out.println("The server send the following opCode and it's ready:\n" + opCode);
-                this.id = data_inPut.readInt();
+                this.id = utilitat.llegirInt();
                 System.out.println("The server send the following int and it's ready:\n" + id);
                 // data_inPut.close();
             }
@@ -64,11 +66,11 @@ public class ClientProtocol {
     public void sendPlay(Socket socket) {
         try {
             byte opCode = 3;
-            data_outPut.writeByte(opCode);
+            utilitat.escriureByte(opCode);
             System.out.println("Enviem opCode to play: \n" + opCode);
-            data_outPut.writeInt(id);
+            utilitat.escriureInt(id);
             System.out.println("Enviem int to play: \n" + id);
-            data_outPut.flush();
+            utilitat.ferFlush();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -78,7 +80,7 @@ public class ClientProtocol {
 
     public boolean recivedAdmit(Socket socket) {
         try {
-            byte opCode = data_inPut.readByte();
+            byte opCode = utilitat.llegirByte();
             if (opCode != 4) {
                 byte error = 4;
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
@@ -87,7 +89,7 @@ public class ClientProtocol {
                 return false;
             } else {
                 System.out.println("The server send the following opCode and it's admit:\n" + opCode);
-                int isAdmit = data_inPut.readInt();
+                int isAdmit = utilitat.llegirInt();
                 if (isAdmit == 1) {
                     boolean admit = true;
                     System.out.println("The server send the following bool and it's admit:\n" + isAdmit + admit);
@@ -123,14 +125,14 @@ public class ClientProtocol {
         DataInputStream data_inPut = null;
         try {
             data_inPut = new DataInputStream(socket.getInputStream());
-            byte opCode = data_inPut.readByte();
+            byte opCode = utilitat.llegirByte();
             System.out.println("The opCpde it's bad:\n" + opCode);
-            byte error = data_inPut.readByte();
+            byte error = utilitat.llegirByte();
             System.out.println("The client has the following error number:\n" + error);
             int a = 1;
             String name = "";
             while (a != 48) {
-                char e = data_inPut.readChar();
+                char e = utilitat.llegirChar();;
                 if (e != 48) {
                     name += (char) e;
                 }
@@ -139,8 +141,8 @@ public class ClientProtocol {
             System.out.println("The client has the following message of error:\n" + name);
 
             // HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
-            byte primer = (byte) data_inPut.read();
-            byte segon = (byte) data_inPut.read();
+            byte primer = utilitat.llegirByte();
+            byte segon = utilitat.llegirByte();
             System.out.println("The client has the following bytes:\n" + primer + segon);
             System.out.println("Joc TANCAT");
         } catch (IOException e) {
