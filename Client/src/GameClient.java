@@ -27,7 +27,7 @@ public class GameClient {
         if (cp.recivedAdmit(socket)) {
             cp.sendAction(socket);
         }
-        if (cp.recivedResult(socket)) {
+        if (cp.receivedResult(socket)) {
             cp.finalGame(socket);
         }
 

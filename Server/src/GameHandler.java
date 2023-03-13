@@ -41,17 +41,17 @@ public class GameHandler extends Thread {
 
     public void play() throws IOException {
         GameProtocol gh = new GameProtocol(socket);
-        // gh.recivedHello(socket);
-        if (gh.recivedHello(socket)) {
+        // gh.receivedHello(socket);
+        if (gh.receivedHello(socket)) {
             gh.sendReady(socket);
         }
-        if (gh.recivedPlay(socket)) {
+        if (gh.receivedPlay(socket)) {
             gh.sendAdmit(socket);
         }
-        if (gh.recivedAction(socket)) {
-            gh.sentResult(socket);
+        if (gh.receivedAction(socket)) {
+            gh.sendResult(socket);
         }
-        if (gh.recivedError(socket)) {
+        if (gh.receivedError(socket)) {
             System.out.println("Final del juego por error");
         }
     }

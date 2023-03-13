@@ -23,7 +23,7 @@ public class GameProtocol {
         this.socket = socket;
     }
 
-    public boolean recivedHello(Socket socket) {
+    public boolean receivedHello(Socket socket) {
         try {// (DataInputStream data_inPut = new DataInputStream(socket.getInputStream())) {
             byte opCode = utils.llegirByte();
             if (opCode != 1) {
@@ -33,16 +33,16 @@ public class GameProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The client send the following opCode:\n" + opCode);
+                System.out.println("The client sent the following opCode:\n" + opCode);
                 id = utils.llegirInt();
-                System.out.println("The client send the following int:\n" + id);
+                System.out.println("The client sent the following int:\n" + id);
                 String name = utils.llegirString();
 
                 // HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
                 byte primer = utils.llegirByte();
                 byte segon = utils.llegirByte();
-                System.out.println("The client send the following bytes:\n" + primer + segon);
-                // System.out.println("The client send the following message:\n" + opCode + id +
+                System.out.println("The client sent the following bytes:\n" + primer + segon);
+                // System.out.println("The client sent the following message:\n" + opCode + id +
                 // name + buffer);
                 // data_inPut.close();
             }
@@ -89,9 +89,9 @@ public class GameProtocol {
 
     }
 
-    public boolean recivedPlay(Socket socket) {
+    public boolean receivedPlay(Socket socket) {
         try {
-            byte opCode = data_inPut.readByte();
+            byte opCode = utils.llegirByte();
             if (opCode != 3) {
                 byte error = 4;
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
@@ -99,9 +99,9 @@ public class GameProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The server send the following opCode and want's play:\n" + opCode);
+                System.out.println("The client sent the following opCode and wants to play:\n" + opCode);
                 this.id = utils.llegirInt();
-                System.out.println("The server send the following int and want's play:\n" + id);
+                System.out.println("The client sent the following int and wants to play:\n" + id);
                 // data_inPut.close();
             }
         } catch (IOException e) {
@@ -128,39 +128,13 @@ public class GameProtocol {
         }
     }
 
-    public String receivedResult(Socket socket) {
-        try {
-            byte opCode = utils.llegirByte();
-            if (opCode != 6) {
-                byte error = 6;
-                // String msg = "MISSATGE MAL FORMAT";
-                // sendError(socket, (byte) 8, error, "no s'ha rebut resultat"); // msg);
-                System.out.println("Error al opCode");
-                return ("Error al opCode");
-            } else {
-                System.out.println("The server sent the following opCode and wants to play:\n" + opCode);
-                String resultat = utils.llegirUTF();
-                System.out.println("Result S-------" + opCode + "" + resultat + "------C");
-                // data_inPut.close();
-                return resultat;
-            }
-        } catch (IOException msg) {
-            // TODO Auto-generated catch block
-           throw new RuntimeException("error a receivedResult");
-        }
 
-    }
-
-    public void sentResult(Socket socket) {
+    public void sendResult(Socket socket) {
         try {
             byte opCode = 6;
             utils.escriureByte( opCode);
             System.out.println("Enviem opCode to result: \n" + opCode);
-            int isAdmit = 1; // 1 si admitim, 0 si no (potser si hi ha un error enviem 0)
-            utils.escriureInt( isAdmit);
-            String getresultat = receivedResult(socket);
-            utils.escriureUTF(getresultat);
-            data_outPut.flush();
+
 
         } catch (IOException msg) {
             throw new RuntimeException("error a sentResult");
@@ -170,14 +144,32 @@ public class GameProtocol {
 
 
 
-    public boolean recivedAction(Socket socket) {
+    public boolean receivedAction(Socket socket) {
+        try {
+            byte opCode = utils.llegirByte();
+            if (opCode != 5) {
+                byte error = 5;
+                // String msg = "PARAULA DESCONEGUDA";
+                // sendError(socket, (byte) 8, error, "PARAULA DESCONEGUDA"); // msg);
+                System.out.println("Error al rebre l'acció");
+                return false;
+            } else {
+                System.out.println("The client sent the following opCode and wants to play:\n" + opCode);
+                this.id = utils.llegirInt();
+                String accio = utils.llegirAction();
+                System.out.println("C -----ACTION " + accio + " -----> S");
+                return true;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return false;
     }
 
-    public void sendResult(Socket socket) {
-    }
 
-    public boolean recivedError(Socket socket) {
+
+    public boolean receivedError(Socket socket) {
         return false;
     }
 

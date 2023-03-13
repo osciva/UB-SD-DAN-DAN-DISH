@@ -102,9 +102,9 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
 
     /*Escriure un string*/
 
-    public void escriureString( int headerLength, String stringData) throws IOException {
+    public void escriureString(String stringData) throws IOException {
 
-
+        int headerLength =3; //cadena de hasta 65535 caracteres en UTF-8
         byte[] headerBytes = new byte[headerLength];
         String headerString;
         int stringLength = 0;
@@ -128,7 +128,7 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
         // Se envia la cabecera
         this.dos.write(headerBytes, 0, headerLength);
 
-        // se enviar la cadena usando writeBytes
+        // se envia la cadena usando writeBytes
         this.dos.writeBytes(stringData);
     }
 
@@ -174,8 +174,8 @@ error-> codi operació 8 (opcode: 1 byte ,  ErrCode: 1 byte ,  Msg: String , 00:
     }
 
     //escriure la acció
-    public void escriureAction( int headerLength, String action) throws IOException {
-        escriureString(headerLength, action);
+    public void escriureAction( String action) throws IOException {
+        escriureString(action);
     }
 
 }
