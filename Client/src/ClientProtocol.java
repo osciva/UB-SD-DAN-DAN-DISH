@@ -13,7 +13,6 @@ public class ClientProtocol {
     private util utilitat;
     Scanner scanner = new Scanner(System.in);
 
-
     public ClientProtocol(Socket socket) {
         this.socket = socket;
         try {
@@ -34,8 +33,8 @@ public class ClientProtocol {
                 data_outPut.writeChar(p);
             }
             utilitat.escriureChar('0');
-            utilitat.escriureByte((byte)0); // Indica el final de trama
-            utilitat.escriureByte((byte)0); // Indica el final de trama
+            utilitat.escriureByte((byte) 0); // Indica el final de trama
+            utilitat.escriureByte((byte) 0); // Indica el final de trama
             utilitat.ferFlush();
             // data_outPut.close();
         } catch (IOException e) {
@@ -113,26 +112,27 @@ public class ClientProtocol {
     }
 
     public void sendAction(Socket socket) {
-            try{
-                byte opCode = 5;
-                utilitat.escriureByte(opCode);
-                System.out.println("Enviem opCode to play: \n" + opCode);
-                utilitat.escriureInt(id);
-                System.out.println("Enviem int to play: \n" + id);
-                System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
-                String accion = scanner.nextLine().toUpperCase(Locale.ROOT);
-                while (!accion.equalsIgnoreCase("SHOOT") && !accion.equalsIgnoreCase("BLOCK") && !accion.equalsIgnoreCase("CHARGE")) {
-                    System.out.println("Perdona, no t'he entés... ");
-                    System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE) ");
-                    accion = scanner.nextLine();
-                }
-
-                System.out.println("La acció triada es: " + accion.toUpperCase(Locale.ROOT));
-                utilitat.escriureAction(accion);
-                utilitat.ferFlush();
-            }catch(IOException error){
-                throw new RuntimeException(error);
+        try {
+            byte opCode = 5;
+            utilitat.escriureByte(opCode);
+            System.out.println("Enviem opCode to play: \n" + opCode);
+            utilitat.escriureInt(id);
+            System.out.println("Enviem int to play: \n" + id);
+            System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+            String accion = scanner.nextLine().toUpperCase(Locale.ROOT);
+            while (!accion.equalsIgnoreCase("SHOOT") && !accion.equalsIgnoreCase("BLOCK")
+                    && !accion.equalsIgnoreCase("CHARGE")) {
+                System.out.println("Perdona, no t'he entés... ");
+                System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE) ");
+                accion = scanner.nextLine();
             }
+
+            System.out.println("La acció triada es: " + accion.toUpperCase(Locale.ROOT));
+            utilitat.escriureAction(accion);
+            utilitat.ferFlush();
+        } catch (IOException error) {
+            throw new RuntimeException(error);
+        }
     }
 
     public boolean receivedResult(Socket socket) {
@@ -158,7 +158,6 @@ public class ClientProtocol {
 
     }
 
-
     public void finalGame(Socket socket) {
 
     }
@@ -174,7 +173,7 @@ public class ClientProtocol {
             int a = 1;
             String name = "";
             while (a != 48) {
-                char e = utilitat.llegirChar();;
+                char e = utilitat.llegirChar();
                 if (e != 48) {
                     name += (char) e;
                 }
