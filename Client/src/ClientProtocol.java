@@ -8,6 +8,8 @@ import java.util.Scanner;
 public class ClientProtocol {
     private Socket socket;
     private int id;
+    private int contBales;
+    private String result;
     private DataOutputStream data_outPut;
     private DataInputStream data_inPut;
     private util utilitat;
@@ -19,6 +21,7 @@ public class ClientProtocol {
             data_outPut = new DataOutputStream(socket.getOutputStream());
             data_inPut = new DataInputStream(socket.getInputStream());
             utilitat = new util(socket);
+            this.contBales = 0;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -30,9 +33,9 @@ public class ClientProtocol {
             utilitat.escriureInt(id);
             for (int i = 0; i < name.length(); i++) {
                 char p = name.charAt(i);
-                data_outPut.writeChar(p);
+                utilitat.escriureChar(p);
             }
-            utilitat.escriureChar('0');
+            utilitat.escriureChar('4');
             utilitat.escriureByte((byte) 0); // Indica el final de trama
             utilitat.escriureByte((byte) 0); // Indica el final de trama
             utilitat.ferFlush();
@@ -118,16 +121,32 @@ public class ClientProtocol {
             System.out.println("Enviem opCode to play: \n" + opCode);
             utilitat.escriureInt(id);
             System.out.println("Enviem int to play: \n" + id);
-            System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+            if(contBales > 0 ){
+                System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+            } else{
+                System.out.println("Què vols fer? (BLOCK o CHARGE)");
+            }
             String accion = scanner.nextLine().toUpperCase(Locale.ROOT);
             while (!accion.equalsIgnoreCase("SHOOT") && !accion.equalsIgnoreCase("BLOCK")
                     && !accion.equalsIgnoreCase("CHARGE")) {
                 System.out.println("Perdona, no t'he entés... ");
-                System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE) ");
+                if(contBales > 0 ){
+                    System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+                } else{
+                    System.out.println("Què vols fer? (BLOCK o CHARGE)");
+                }
                 accion = scanner.nextLine();
-            }
 
+            }
             System.out.println("La acció triada es: " + accion.toUpperCase(Locale.ROOT));
+            if(accion.toUpperCase().equals("CHARGE")){
+                this.contBales += 1;
+                System.out.println("EL CLIENT ARA TE" + contBales + "BALES");
+            }
+            else if(accion.toUpperCase().equals("SHOOT")){
+                this.contBales -= 1;
+                System.out.println("EL CLIENT ARA TE" + contBales + "BALES");
+            }
             utilitat.escriureAction(accion);
             utilitat.ferFlush();
         } catch (IOException error) {
@@ -138,6 +157,7 @@ public class ClientProtocol {
     public boolean receivedResult(Socket socket) {
         try {
             byte opCode = utilitat.llegirByte();
+            System.out.println("EL OPCODE EEEEEEEEEEES: " + opCode);
             if (opCode != 6) {
                 byte error = 6;
                 // String msg = "MISSATGE MAL FORMAT";
@@ -146,20 +166,43 @@ public class ClientProtocol {
                 return false;
             } else {
                 System.out.println("The server sent the following opCode showing the result:\n" + opCode);
-                String resultat = utilitat.llegirUTF();
-                System.out.println("Result S-------" + opCode + "" + resultat + "------C");
+                String resultat = utilitat.llegirString();
+                this.result = resultat;
+                System.out.println("EL RESULT ES: " + result + " Y EL RESULTAT ERA: "  + resultat);
+                System.out.println("Result S-------" + opCode + " " + this.result + "------C");
                 // data_inPut.close();
-                return true;
+                if(!this.result.equals("DRAW0") && !this.result.equals("ENDS0") && !this.result.equals("ENDS1")){
+                    System.out.println("encara no s'ha acabat la partida");
+                    return true;
+                }else{
+                    return false;
+                }
+
             }
         } catch (IOException msg) {
             // TODO Auto-generated catch block
             throw new RuntimeException("error a receivedResult");
         }
-
     }
 
     public void finalGame(Socket socket) {
+        switch (result){
+            case "ENDS0":
+                System.out.println("S'ha acabat la partida y ha guanyat client");
+                break;
+            case "ENDS1":
+                System.out.println("S'ha acabat la partida y ha guanyat servidor");
+                break;
+            case "DRAW0":
+                System.out.println("S'ha acabat la partida y heu empatat");
+                break;
 
+        }
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean recivedError(Socket socket) {

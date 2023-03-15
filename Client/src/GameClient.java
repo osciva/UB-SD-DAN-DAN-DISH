@@ -21,15 +21,24 @@ public class GameClient {
         cp.sendHello(socket, (byte) 1, id, message);
         // Creamos maquina d'estats
 
-        if (cp.recivedReady(socket)) {
-            cp.sendPlay(socket);
-        }
-        if (cp.recivedAdmit(socket)) {
-            cp.sendAction(socket);
-        }
-        if (cp.receivedResult(socket)) {
-            cp.finalGame(socket);
-        }
+            if (cp.recivedReady(socket)) {
+                cp.sendPlay(socket);
+            }
+            if (cp.recivedAdmit(socket)) {
+                cp.sendAction(socket);
+            }
+            while(socket.isConnected()) {
+                boolean temp = cp.receivedResult(socket);
+                if (temp == true) {
+                    cp.sendAction(socket);
+                }
+                if (temp == false) {
+                    cp.finalGame(socket);
+                    socket.close();
+                    break;
+                }
+            }
+
 
         /*
          * else if(cp.recivedError(socket)){
