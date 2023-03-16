@@ -27,8 +27,9 @@ public class ClientProtocol {
         }
     }
 
-    public void sendHello(Socket socket, byte opCode, int id, String name) {
+    public void sendHello(Socket socket,  int id, String name) {
         try {
+            byte opCode = 1;
             utilitat.escriureByte((opCode)); // Capçalera, serà un 1, perque es el HELLO
             utilitat.escriureInt(id);
             for (int i = 0; i < name.length(); i++) {
@@ -38,6 +39,7 @@ public class ClientProtocol {
             utilitat.escriureChar('4');
             utilitat.escriureByte((byte) 0); // Indica el final de trama
             utilitat.escriureByte((byte) 0); // Indica el final de trama
+            System.out.println("HELLO C ------- " + opCode + " " + this.id + " ---------> S");
             utilitat.ferFlush();
             // data_outPut.close();
         } catch (IOException e) {
@@ -57,9 +59,10 @@ public class ClientProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The server sent the following opCode showing that it's ready:\n" + opCode);
+
                 this.id = utilitat.llegirInt();
-                System.out.println("The server sent the following int showing that it's ready:\n" + id);
+                System.out.println("READY C <------ " + opCode + " "+ this.id +" ---------- S");
+
                 // data_inPut.close();
             }
         } catch (IOException e) {
@@ -73,9 +76,8 @@ public class ClientProtocol {
         try {
             byte opCode = 3;
             utilitat.escriureByte(opCode);
-            System.out.println("Enviem opCode to play: \n" + opCode);
             utilitat.escriureInt(id);
-            System.out.println("Enviem int to play: \n" + id);
+            System.out.println("PLAY  C ------- "+ opCode + " "+ this.id+" ---------> S");
             utilitat.ferFlush();
 
         } catch (IOException e) {
@@ -94,14 +96,14 @@ public class ClientProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The server sent the following opCode and you got admitted:\n" + opCode);
                 int isAdmit = utilitat.llegirInt();
                 if (isAdmit == 1) {
                     boolean admit = true;
-                    System.out.println("The server sent the following bool refered to admit:\n" + isAdmit + admit);
+                    System.out.println("ADMIT C <------ " + opCode + " 1 " +" ---------- S");
                 } else {
                     byte error = 4;
                     boolean admit = false;
+                    System.out.println("you were not admitted");
                     // String msg = "NO S'ADMATEIX";
                     // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 }
@@ -118,9 +120,7 @@ public class ClientProtocol {
         try {
             byte opCode = 5;
             utilitat.escriureByte(opCode);
-            System.out.println("Enviem opCode to play: \n" + opCode);
             utilitat.escriureInt(id);
-            System.out.println("Enviem int to play: \n" + id);
             if(contBales > 0 ){
                 System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
             } else{
@@ -141,13 +141,24 @@ public class ClientProtocol {
             System.out.println("La acció triada es: " + accion.toUpperCase(Locale.ROOT));
             if(accion.toUpperCase().equals("CHARGE")){
                 this.contBales += 1;
-                System.out.println("EL CLIENT ARA TE" + contBales + "BALES");
+                if (contBales==1){
+                    System.out.println("EL CLIENT ARA TE " + contBales + " BALA");
+                }
+                else{
+                    System.out.println("EL CLIENT ARA TE " + contBales + " BALES");
+                }
             }
             else if(accion.toUpperCase().equals("SHOOT")){
                 this.contBales -= 1;
-                System.out.println("EL CLIENT ARA TE" + contBales + "BALES");
+                if (contBales==1){
+                    System.out.println("EL CLIENT ARA TE " + contBales + " BALA");
+                }
+                else{
+                    System.out.println("EL CLIENT ARA TE " + contBales + " BALES");
+                }
             }
             utilitat.escriureAction(accion);
+            System.out.println("ACTION C ------- "+opCode+" "+ accion + " ---------> S");
             utilitat.ferFlush();
         } catch (IOException error) {
             throw new RuntimeException(error);
@@ -157,7 +168,6 @@ public class ClientProtocol {
     public boolean receivedResult(Socket socket) {
         try {
             byte opCode = utilitat.llegirByte();
-            System.out.println("EL OPCODE EEEEEEEEEEES: " + opCode);
             if (opCode != 6) {
                 byte error = 6;
                 // String msg = "MISSATGE MAL FORMAT";
@@ -165,14 +175,35 @@ public class ClientProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The server sent the following opCode showing the result:\n" + opCode);
-                String resultat = utilitat.llegirString();
-                this.result = resultat;
-                System.out.println("EL RESULT ES: " + result + " Y EL RESULTAT ERA: "  + resultat);
-                System.out.println("Result S-------" + opCode + " " + this.result + "------C");
+
+                this.result = utilitat.llegirString();
+                System.out.println("RESULT S <------ " + opCode + " " + this.result + " ---------- C");
+                switch(result){
+                    case "PLUS0":
+                        System.out.println("Client bloqueja i Servidor recarrega una bala");
+                        break;
+                    case "PLUS1":
+                        System.out.println("Client recarrega una bala i Servidor bloqueja");
+                        break;
+                    case "PLUS2":
+                        System.out.println("Client i Servidor recarreguen una bala");
+                        break;
+                    case "SAFE0":
+                        System.out.println("Client dispara i Servidor bloqueja la bala");
+                        break;
+                    case "SAFE1":
+                        System.out.println("Client ha bloquejat la bala que Servidor ha disparat");
+                        break;
+                    case "SAFE2":
+                        System.out.println("Ambdós jugadors han bloquejat");
+                        break;
+
+
+
+                }
                 // data_inPut.close();
                 if(!this.result.equals("DRAW0") && !this.result.equals("ENDS0") && !this.result.equals("ENDS1")){
-                    System.out.println("encara no s'ha acabat la partida");
+                    System.out.println("el joc segueix");
                     return true;
                 }else{
                     return false;
@@ -188,13 +219,13 @@ public class ClientProtocol {
     public void finalGame(Socket socket) {
         switch (result){
             case "ENDS0":
-                System.out.println("S'ha acabat la partida y ha guanyat client");
+                System.out.println("Servidor ha disparat mentres Client recarregava --> Guanya Servidor");
                 break;
             case "ENDS1":
-                System.out.println("S'ha acabat la partida y ha guanyat servidor");
+                System.out.println("Client ha disparat mentres Servidor recarregava --> Guanya Client");
                 break;
             case "DRAW0":
-                System.out.println("S'ha acabat la partida y heu empatat");
+                System.out.println("Ambdós jugadors han disparat --> Empat");
                 break;
 
         }

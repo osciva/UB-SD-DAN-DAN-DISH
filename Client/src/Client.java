@@ -32,6 +32,7 @@ public class Client {
         try {
             socket = new Socket(host, port);
             System.out.println("Client connected to server");
+            System.out.println("C- [TCP Connect]");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Proxy has invalid type or null:\n" + e.getMessage());
         } catch (SecurityException e) {
@@ -48,10 +49,20 @@ public class Client {
         Scanner sc = new Scanner(System.in);
 
         while (message.isEmpty()) {
-            System.out.println("Write the message to be sent to the server instance:");
+            System.out.println("Write your nickname for DAN DAN DISH: ");
             message = sc.nextLine();
-            System.out.println("and the int:");
-            id = sc.nextInt();
+            System.out.println("now, choose the integer that will represent your lobby during the game: ");
+            boolean valido = false;
+
+            while (!valido) {
+                if (sc.hasNextInt()) {
+                    id = sc.nextInt();
+                    valido = true;
+                } else {
+                    System.out.println("Error: the chosen value isn't an int... Try again please:\n");
+                    sc.next(); // descarta el valor inválido
+                }
+            }
         }
 
         /*
