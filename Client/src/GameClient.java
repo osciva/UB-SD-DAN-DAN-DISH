@@ -18,7 +18,7 @@ public class GameClient {
         // data_stream.writeUTF(message);
         // data_stream.write(id);
         ClientProtocol cp = new ClientProtocol(socket);
-        cp.sendHello(socket, (byte) 1, id, message);
+        cp.sendHello(socket, id, message);
         // Creamos maquina d'estats
 
             if (cp.recivedReady(socket)) {

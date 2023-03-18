@@ -35,15 +35,15 @@ public class GameProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The client sent the following opCode:\n" + opCode);
+
                 id = utils.llegirInt();
-                System.out.println("The client sent the following int:\n" + id);
+
                 String name = utils.llegirString();
-                System.out.println("The client sent the following name:\n" + name);
+                System.out.println(name + " wants to play");
                 // HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
                 byte primer = utils.llegirByte();
                 byte segon = utils.llegirByte();
-                System.out.println("The client sent the following bytes:\n" + primer + segon);
+
                 // System.out.println("The client sent the following message:\n" + opCode + id +
                 // name + buffer);
                 // data_inPut.close();
@@ -80,9 +80,10 @@ public class GameProtocol {
         try {
             byte opCode = 2;
             utils.escriureByte(opCode);
-            System.out.println("Enviem opCode to ready: \n" + opCode);
+
             utils.escriureInt(id);
-            System.out.println("Enviem int to ready: \n" + id);
+            System.out.println("C <------READY " +id+" --------- S");
+            System.out.println("the following id got assigned: " + id);
             utils.ferFlush();
 
         } catch (IOException e) {
@@ -101,9 +102,8 @@ public class GameProtocol {
                 System.out.println("Error al opCode");
                 return false;
             } else {
-                System.out.println("The client sent the following opCode and wants to play:\n" + opCode);
                 this.id = utils.llegirInt();
-                System.out.println("The client sent the following int and wants to play:\n" + id);
+
                 // data_inPut.close();
             }
         } catch (IOException e) {
@@ -118,10 +118,9 @@ public class GameProtocol {
         try {
             byte opCode = 4;
             utils.escriureByte(opCode);
-            System.out.println("Enviem opCode to Admit: \n" + opCode);
             int isAdmit = 1; // 1 si admitim, 0 si no (potser si hi ha un error enviem 0)
             utils.escriureInt(isAdmit);
-            System.out.println("Enviem int to Admit: \n" + isAdmit);
+            System.out.println("C <------ ADMIT " +isAdmit+ " --------- S");
             utils.ferFlush();
 
         } catch (IOException msg) {
@@ -140,11 +139,11 @@ public class GameProtocol {
                 System.out.println("Error al rebre l'acció");
                 return false;
             } else {
-                System.out.println("The client sent the following opCode and wants to play:\n" + opCode);
+
                 this.id = utils.llegirInt();
                 String accio = utils.llegirAction();
                 this.accioRebuda = accio;
-                System.out.println("C -----ACTION " + accio + " -----> S");
+                System.out.println("C ------- ACTION " + accio + " --------> S");
                 return true;
             }
         } catch (IOException e) {
@@ -158,37 +157,58 @@ public class GameProtocol {
         try {
             byte opCode = 6;
             utils.escriureByte(opCode);
-            System.out.println("EL OPCODE EEEEEES: " + opCode);
-            System.out.println("Enviem opCode to result: \n" + opCode);
+            String action = "";
             int random = 0;
             if (this.contBales > 0) {
                 random = (int) (Math.random() * 3) + 1;
+                if (random == 1){
+                    action = "SHOOT";
+                }
+                else if (random == 2){
+                    action = "BLOCK";
+                }
+                else if (random == 3){
+                    action = "CHARGE";
+                }
+
             } else {
                 random = (int) (Math.random() * 2) + 2;
+                if (random == 2){
+                    action = "BLOCK";
+                }
+                else if (random == 3){
+                    action = "CHARGE";
+                }
             }
             String accioServer = "";
             String result = "";
             String accioClient = this.accioRebuda.toUpperCase();
-            System.out.println("La accio escollida per el server es: " + random);
+            System.out.println("La accio escollida per el server es: " + random + " = " +action);
             switch (random) {
                 case 1:
                     accioServer = "SHOOT";
                     this.contBales -= 1;
-                    System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALES");
+
                     if (accioClient.equals("SHOOT")) {
                         result = "DRAW0"; // Client i Servidor disparen, empat
                         utils.escriureString(result);
-                        System.out.println("Client i Servidor disparen, empat Y EL RESULT ERA: " + result);
+                        System.out.println("Client i Servidor disparen --> empat");
                         break;
                     } else if (accioClient.equals("CHARGE")) {
                         result = "ENDS0"; // Client recarrega, Servidor dispara i guanya
                         utils.escriureString(result);
-                        System.out.println("Client recarrega, Servidor dispara i guanya");
+                        System.out.println("Client recarrega, Servidor dispara --> servidor guanya");
                         break;
                     } else {
                         result = "SAFE1"; // Client bloqueja, Servidor dispara, bloqueig del client
                         utils.escriureString(result);
-                        System.out.println("Client bloqueja, Servidor dispara, bloqueig del client");
+                        System.out.println("Client bloqueja, Servidor dispara --> el joc segueix");
+                        if(this.contBales ==1){
+                            System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALA");
+                        }
+                        else{
+                            System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALES");
+                        }
                         break;
                     }
 
@@ -197,38 +217,68 @@ public class GameProtocol {
                     if (accioClient.equals("SHOOT")) {
                         result = "SAFE0"; // Client dispara, Servidor bloqueja.
                         utils.escriureString(result);
-                        System.out.println("Client dispara, Servidor bloqueja.");
+                        System.out.println("Client dispara, Servidor bloqueja --> el joc segueix");
+                        if(this.contBales ==1){
+                            System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALA");
+                        }
+                        else{
+                            System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALES");
+                        }
                         break;
                     } else if (accioClient.equals("CHARGE")) {
                         result = "PLUS1"; // Client recarrega una bala perque servidor bloqueja
                         utils.escriureString(result);
-                        System.out.println("Client recarrega una bala perque servidor bloqueja");
+                        System.out.println("Client recarrega una bala i servidor bloqueja --> el joc segueix");
+                        if(this.contBales ==1){
+                            System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALA");
+                        }
+                        else{
+                            System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALES");
+                        }
                         break;
                     } else {
                         result = "SAFE2"; // Client i Servidor bloquejen els dos
                         utils.escriureString(result);
-                        System.out.println("Client i Servidor bloquejen els dos");
+                        System.out.println("Client i Servidor bloquejen --> el joc segueix");
+                        if(this.contBales ==1){
+                            System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALA");
+                        }
+                        else{
+                            System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALES");
+                        }
                         break;
                     }
                 case 3:
                     accioServer = "CHARGE";
                     this.contBales += 1;
-                    System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALES");
+
                     if (accioRebuda.toUpperCase().equals("SHOOT")) {
                         result = "ENDS1"; // Client dispara, client guanya
                         utils.escriureString(result);
-                        System.out.println("Client dispara, client guanya");
+                        System.out.println("Client dispara i Servidor recarrega --> client guanya");
                         break;
                     } else if (accioRebuda.toUpperCase().equals("CHARGE")) {
                         result = "PLUS2"; // Client i Servidor recarreguen una bala
                         utils.escriureString(result);
-                        System.out.println("Client i Servidor recarreguen una bala");
+                        System.out.println("Client i Servidor recarreguen una bala --> el joc segueix");
+                        if(this.contBales ==1){
+                            System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALA");
+                        }
+                        else{
+                            System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALES");
+                        }
                         break;
 
                     } else {
                         result = "PLUS0"; // Client bloqueja, Servidor recarrega una bala
                         utils.escriureString(result);
-                        System.out.println("Client bloqueja, Servidor recarrega una bala");
+                        System.out.println("Client bloqueja, Servidor recarrega una bala --> el joc segueix");
+                        if(this.contBales ==1){
+                            System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALA");
+                        }
+                        else{
+                            System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALES");
+                        }
                         break;
                     }
                 default:

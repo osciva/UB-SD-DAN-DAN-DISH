@@ -31,6 +31,7 @@ public class Server {
         try {
             ss = new ServerSocket(port);
             System.out.println("Server up & listening on port "+port+"...\nPress Cntrl + C to stop.");
+
         } catch (IOException e) {
             throw new RuntimeException("I/O error when opening the Server Socket:\n" + e.getMessage());
         }
@@ -44,7 +45,7 @@ public class Server {
 
         try {
             socket = ss.accept();
-            System.out.println("Client accepted");
+            System.out.println("S- [TCP Accept]");
         } catch (IOException e) {
             throw new RuntimeException("I/O error when accepting a client:\n" + e.getMessage());
         } catch (SecurityException e) {
