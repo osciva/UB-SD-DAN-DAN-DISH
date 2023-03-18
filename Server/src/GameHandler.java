@@ -42,7 +42,6 @@ public class GameHandler extends Thread {
     public void play() throws IOException {
         GameProtocol gh = new GameProtocol(socket);
         // gh.receivedHello(socket);
-
         if (gh.receivedHello(socket)) {
             gh.sendReady(socket);
         }
@@ -53,6 +52,17 @@ public class GameHandler extends Thread {
             if (gh.receivedAction(socket)) {
                 gh.sendResult(socket);
             }
+            String resp = gh.jocAcabat(socket); // Ahora mismo el jocAcabat se hace siempre
+            switch (resp) {
+                case "SI":
+                    gh.receivedPlay(socket);
+                case "NO":
+                    socket.close();
+                    break;
+                default:
+                    System.out.println("seguim jugant");
+            }
+
         }
         if (gh.receivedError(socket)) {
             System.out.println("Final del juego por error");

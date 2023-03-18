@@ -160,6 +160,7 @@ public class ClientProtocol {
             utilitat.escriureAction(accion);
             System.out.println("ACTION C ------- "+opCode+" "+ accion + " ---------> S");
             utilitat.ferFlush();
+
         } catch (IOException error) {
             throw new RuntimeException(error);
         }
@@ -216,7 +217,7 @@ public class ClientProtocol {
         }
     }
 
-    public void finalGame(Socket socket) {
+    public boolean finalGame(Socket socket) {
         switch (result){
             case "ENDS0":
                 System.out.println("Servidor ha disparat mentres Client recarregava --> Guanya Servidor");
@@ -229,11 +230,40 @@ public class ClientProtocol {
                 break;
 
         }
-        try {
+        String resposta = "";
+        System.out.println("Vols jugar una altra partida? (Si o No) ");
+        Scanner sc = new Scanner(System.in);
+        resposta = sc.nextLine();
+        while(!resposta.equalsIgnoreCase("SI") && !resposta.equalsIgnoreCase("NO")) {
+            System.out.println("Perdona, no t'he entés... ");
+            System.out.println("Vols jugar una altra partida? (Si o No) ");
+            sc = new Scanner(System.in);
+            resposta = sc.nextLine();
+        }
+        if(resposta.toUpperCase().equals("SI")){
+            try {
+                utilitat.escriureString("SI");
+                utilitat.ferFlush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+
+        }else{
+            try {
+                utilitat.escriureString("NO");
+                utilitat.ferFlush();
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
+       /* try {
             socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     public boolean recivedError(Socket socket) {

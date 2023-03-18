@@ -9,6 +9,7 @@ public class GameProtocol {
     private int id;
     private String accioRebuda;
     private int contBales;
+    int finalInt;
     private DataOutputStream data_outPut;
     private DataInputStream data_inPut;
     private util utils;
@@ -23,6 +24,7 @@ public class GameProtocol {
             throw new RuntimeException(e);
         }
         this.socket = socket;
+        this.finalInt = 3;
     }
 
     public boolean receivedHello(Socket socket) {
@@ -193,11 +195,13 @@ public class GameProtocol {
                         result = "DRAW0"; // Client i Servidor disparen, empat
                         utils.escriureString(result);
                         System.out.println("Client i Servidor disparen --> empat");
+                        this.finalInt = 2;
                         break;
                     } else if (accioClient.equals("CHARGE")) {
                         result = "ENDS0"; // Client recarrega, Servidor dispara i guanya
                         utils.escriureString(result);
                         System.out.println("Client recarrega, Servidor dispara --> servidor guanya");
+                        this.finalInt = 2;
                         break;
                     } else {
                         result = "SAFE1"; // Client bloqueja, Servidor dispara, bloqueig del client
@@ -256,6 +260,7 @@ public class GameProtocol {
                         result = "ENDS1"; // Client dispara, client guanya
                         utils.escriureString(result);
                         System.out.println("Client dispara i Servidor recarrega --> client guanya");
+                        this.finalInt = 2;
                         break;
                     } else if (accioRebuda.toUpperCase().equals("CHARGE")) {
                         result = "PLUS2"; // Client i Servidor recarreguen una bala
@@ -288,6 +293,15 @@ public class GameProtocol {
         } catch (IOException msg) {
             throw new RuntimeException("error a result");
 
+        }
+    }
+
+    public String jocAcabat(Socket socket) {
+        try {
+            String resp = utils.llegirString();
+            return resp.toUpperCase();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class GameClient {
 
@@ -33,9 +34,15 @@ public class GameClient {
                     cp.sendAction(socket);
                 }
                 if (temp == false) {
-                    cp.finalGame(socket);
-                    socket.close();
-                    break;
+                    if(cp.finalGame(socket)){
+                        cp.sendPlay(socket);
+                    }else{
+                        socket.close();
+                        break;
+                    }
+                    //socket.close();
+                    //break;
+
                 }
             }
 
