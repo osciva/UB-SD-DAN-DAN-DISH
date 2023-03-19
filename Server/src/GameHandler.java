@@ -41,6 +41,7 @@ public class GameHandler extends Thread {
 
     public void play() throws IOException {
         GameProtocol gh = new GameProtocol(socket);
+        boolean isFinal = false;
         // gh.receivedHello(socket);
         if (gh.receivedHello(socket)) {
             gh.sendReady(socket);
@@ -49,13 +50,18 @@ public class GameHandler extends Thread {
             gh.sendAdmit(socket);
         }
         while (socket.isConnected()) {
+            if(socket.isClosed() || isFinal){
+                break;
+            }
             if (gh.receivedAction(socket)) {
                 gh.sendResult(socket);
             }
-            String resp = gh.jocAcabat(socket); // Ahora mismo el jocAcabat se hace siempre
+            String resp = gh.jocAcabat(socket);
             switch (resp) {
                 case "SI":
-                    gh.receivedPlay(socket);
+                    gh.receivedPlay(socket); // Debemos hacer que cuando llame al receivedPlay vuelva a hacerse toddo el protocolo
+                    isFinal = true;   // Posiblemente lo podemos conseguir con un bucle..
+                    break;
                 case "NO":
                     socket.close();
                     break;
