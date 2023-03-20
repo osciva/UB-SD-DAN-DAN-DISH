@@ -14,32 +14,57 @@ public class GameClient {
 
     public void play(Socket socket, String message, int id) throws IOException {
 
-        // DataOutputStream data_stream = new
-        // DataOutputStream(socket.getOutputStream());
-        // data_stream.writeUTF(message);
-        // data_stream.write(id);
         ClientProtocol cp = new ClientProtocol(socket);
         cp.sendHello(socket, id, message);
         // Creamos maquina d'estats
-
-            if (cp.recivedReady(socket)) {
+        String resposta = "REREADY";
+        while (!resposta.equals("FINAL")) {
+            switch (resposta.toUpperCase()) {
+                case "ERROR":
+                    System.out.println("final del joc per error");
+                    break;
+                case "REREADY":
+                    resposta = cp.recivedReady(socket);
+                case "SEPLAY":
+                    resposta = cp.sendPlay(socket);
+                case "READMIT":
+                    resposta = cp.recivedAdmit(socket);
+                case "SEACTION":
+                    resposta = cp.sendAction(socket);
+                case "JUGANT":
+                    while(socket.isConnected()) {
+                        cp.receivedResult(socket);
+                        int num = cp.finalGame(socket);
+                        if(num == 1) { // Vol jugar una altre partida
+                            resposta= "SEPLAY";
+                            break;
+                        }else if(num == 2) { // No vol jugar més partidas
+                            socket.close();
+                            resposta = "FINAL";
+                            break;
+                        }else if(num == 3) {
+                            cp.sendAction(socket); // Es segueix amb el joc
+                        }
+                    }
+        }
+        /*if (cp.recivedReady(socket)) {
+            cp.sendPlay(socket);
+        }
+        if (cp.recivedAdmit(socket)) {
+            cp.sendAction(socket);
+        }
+        while(socket.isConnected()) {
+            cp.receivedResult(socket);
+            int num = cp.finalGame(socket);
+            if(num == 1) {
                 cp.sendPlay(socket);
-            }
-            if (cp.recivedAdmit(socket)) {
+                break;
+            }else if(num == 2) {
+                socket.close();
+                break;
+            }else if(num == 3) {
                 cp.sendAction(socket);
-            }
-            while(socket.isConnected()) {
-                cp.receivedResult(socket);
-                int num = cp.finalGame(socket);
-                if(num == 1) {
-                    cp.sendPlay(socket);
-                    break;
-                }else if(num == 2) {
-                    socket.close();
-                    break;
-                }else if(num == 3) {
-                    cp.sendAction(socket);
-                }
+            }*/
                 /*if (temp == true) {
                     cp.sendAction(socket);
                 }
