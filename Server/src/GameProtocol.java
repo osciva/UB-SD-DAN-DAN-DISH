@@ -27,7 +27,7 @@ public class GameProtocol {
         this.finalInt = 3;
     }
 
-    public boolean receivedHello(Socket socket) {
+    public String receivedHello(Socket socket) {
         try {// (DataInputStream data_inPut = new DataInputStream(socket.getInputStream())) {
             byte opCode = utils.llegirByte();
             if (opCode != 1) {
@@ -35,7 +35,9 @@ public class GameProtocol {
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
                 sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
-                return false;
+                //return false;
+                return "ERROR";
+
             } else {
 
                 id = utils.llegirInt();
@@ -53,8 +55,11 @@ public class GameProtocol {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return "ERROR";
+
         }
-        return true;
+        //return true;
+        return "SEREADY";
     }
 
     public void sendError(Socket socket, byte opCode, byte error, String msg) {
@@ -78,7 +83,7 @@ public class GameProtocol {
 
     } // AUN NO LO USAMOS PERO ES ASI, COMPROBADO QUE FUNCIONA
 
-    public void sendReady(Socket socket) {
+    public String sendReady(Socket socket) {
         try {
             byte opCode = 2;
             utils.escriureByte(opCode);
@@ -92,9 +97,10 @@ public class GameProtocol {
             throw new RuntimeException(e);
         }
 
+        return "REPLAY";
     }
 
-    public boolean receivedPlay(Socket socket) {
+    public String receivedPlay(Socket socket) {
         try {
             byte opCode = utils.llegirByte();
             if (opCode != 3) {
@@ -102,7 +108,7 @@ public class GameProtocol {
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
-                return false;
+                //return false;
             } else {
                 this.id = utils.llegirInt();
 
@@ -111,12 +117,15 @@ public class GameProtocol {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return "ERROR";
+
         }
-        return true;
+        //return true;
+        return "SEADMIT";
 
     }
 
-    public void sendAdmit(Socket socket) {
+    public String sendAdmit(Socket socket) {
         try {
             byte opCode = 4;
             utils.escriureByte(opCode);
@@ -129,6 +138,7 @@ public class GameProtocol {
             throw new RuntimeException("error a sendAdmit");
 
         }
+        return "JUGANT";
     }
 
     public boolean receivedAction(Socket socket) {

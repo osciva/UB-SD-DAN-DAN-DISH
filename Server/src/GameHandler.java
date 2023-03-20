@@ -42,6 +42,52 @@ public class GameHandler extends Thread {
     public void play() throws IOException {
         GameProtocol gh = new GameProtocol(socket);
         boolean isFinal = false;
+        String resposta = "REHELLO";
+        while (!resposta.equals("FINAL")) {
+            switch (resposta.toUpperCase()) {
+                case "ERROR":
+                    gh.receivedError(socket);
+                    resposta = "FINAL";
+                    System.out.println("Final del joc per error");
+                case "REHELLO":
+                    resposta = gh.receivedHello(socket);
+                case "SEREADY":
+                    resposta = gh.sendReady(socket);
+                case "REPLAY":
+                    resposta = gh.receivedPlay(socket);
+                case "SEADMIT":
+                    resposta = gh.sendAdmit(socket);
+                case "JUGANT":
+                    isFinal = false;
+                    while (socket.isConnected()) {
+                        if (socket.isClosed() || isFinal) {
+                            System.out.println("Final d'aquesta partida");
+                            break;
+                        }
+                        if (gh.receivedAction(socket)) {
+                            gh.sendResult(socket);
+                        }
+                        String resp = gh.jocAcabat(socket);
+                        switch (resp) {
+                            case "SI":
+                                isFinal = true;
+                                resposta = "REPLAY";
+                                break;
+                            case "NO":
+                                isFinal = true;
+                                resposta = "FINAL";
+                                socket.close();
+                                break;
+                            default:
+                                System.out.println("seguim jugant");
+                        }
+
+                    }
+                }
+            }
+        }
+        /*GameProtocol gh = new GameProtocol(socket);
+        boolean isFinal = false;
         // gh.receivedHello(socket);
         if (gh.receivedHello(socket)) {
             gh.sendReady(socket);
@@ -73,6 +119,6 @@ public class GameHandler extends Thread {
         if (gh.receivedError(socket)) {
             System.out.println("Final del juego por error");
         }
-    }
+    }*/
 
 }

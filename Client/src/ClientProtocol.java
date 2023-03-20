@@ -39,7 +39,7 @@ public class ClientProtocol {
             utilitat.escriureChar('4');
             utilitat.escriureByte((byte) 0); // Indica el final de trama
             utilitat.escriureByte((byte) 0); // Indica el final de trama
-            System.out.println("HELLO C ------- " + opCode + " " + this.id + " ---------> S");
+            System.out.println("HELLO C ------- " + opCode + " " + id + " " + name + "00 ---------> S");
             utilitat.ferFlush();
             // data_outPut.close();
         } catch (IOException e) {
@@ -49,7 +49,7 @@ public class ClientProtocol {
 
     }
 
-    public boolean recivedReady(Socket socket) {
+    public String recivedReady(Socket socket) {
         try {
             byte opCode = utilitat.llegirByte();
             if (opCode != 2) {
@@ -57,7 +57,7 @@ public class ClientProtocol {
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
-                return false;
+                return "ERROR";
             } else {
 
                 this.id = utilitat.llegirInt();
@@ -68,11 +68,12 @@ public class ClientProtocol {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return "ERROR";
         }
-        return true;
+        return "SEPLAY";
     }
 
-    public void sendPlay(Socket socket) {
+    public String sendPlay(Socket socket) {
         try {
             byte opCode = 3;
             utilitat.escriureByte(opCode);
@@ -84,9 +85,10 @@ public class ClientProtocol {
             throw new RuntimeException(e);
         }
 
+        return "READMIT";
     }
 
-    public boolean recivedAdmit(Socket socket) {
+    public String recivedAdmit(Socket socket) {
         try {
             byte opCode = utilitat.llegirByte();
             if (opCode != 4) {
@@ -94,7 +96,9 @@ public class ClientProtocol {
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
-                return false;
+                //return false;
+                return "ERROR";
+
             } else {
                 int isAdmit = utilitat.llegirInt();
                 if (isAdmit == 1) {
@@ -112,21 +116,32 @@ public class ClientProtocol {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return "ERROR";
+
         }
-        return true;
+        //return true;
+        return "SEACTION";
     }
 
-    public void sendAction(Socket socket) {
+    public String sendAction(Socket socket) {
+        String accion2 = "BLOCK";
         try {
             byte opCode = 5;
             utilitat.escriureByte(opCode);
             utilitat.escriureInt(id);
             if(contBales > 0 ){
                 System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+                accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
             } else{
                 System.out.println("Què vols fer? (BLOCK o CHARGE)");
+                accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
+                while (!accion2.equalsIgnoreCase("BLOCK") && !accion2.equalsIgnoreCase("CHARGE")) {
+                    System.out.println("Nomes pots fer BLOCK o CHARGE...");
+                    System.out.println("Què vols fer? (BLOCK o CHARGE)");
+                    accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
+                }
             }
-            String accion = scanner.nextLine().toUpperCase(Locale.ROOT);
+            String accion = accion2;
             while (!accion.equalsIgnoreCase("SHOOT") && !accion.equalsIgnoreCase("BLOCK")
                     && !accion.equalsIgnoreCase("CHARGE")) {
                 System.out.println("Perdona, no t'he entés... ");
@@ -164,6 +179,7 @@ public class ClientProtocol {
         } catch (IOException error) {
             throw new RuntimeException(error);
         }
+        return "JUGANT";
     }
 
     public boolean receivedResult(Socket socket) {
