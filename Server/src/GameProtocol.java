@@ -27,13 +27,13 @@ public class GameProtocol {
         this.finalInt = 3;
     }
 
-    public String receivedHello(Socket socket) {
+    public String receivedHello(Socket socket) throws utilsError{
         try {// (DataInputStream data_inPut = new DataInputStream(socket.getInputStream())) {
             byte opCode = utils.llegirByte();
             if (opCode != 1) {
                 byte error = 4;
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
-                sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
+                //sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
                 //return false;
                 return "ERROR";
@@ -53,15 +53,12 @@ public class GameProtocol {
                 // data_inPut.close();
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return "ERROR";
-
+            throw new utilsError("Error a receivedHello: "+e.getMessage());
         }
         //return true;
         return "SEREADY";
     }
-
+/*
     public void sendError(Socket socket, byte opCode, byte error, String msg) {
         try (DataOutputStream data_outPut = new DataOutputStream(socket.getOutputStream())) {
             // HACER UN SWITCH CASE, Y DEPENDE DEL ERROR QUE SEA, ENVIARA UN MENSAJE
@@ -82,8 +79,8 @@ public class GameProtocol {
         }
 
     } // AUN NO LO USAMOS PERO ES ASI, COMPROBADO QUE FUNCIONA
-
-    public String sendReady(Socket socket) {
+*/
+    public String sendReady(Socket socket) throws utilsError {
         try {
             byte opCode = 2;
             utils.escriureByte(opCode);
@@ -94,13 +91,13 @@ public class GameProtocol {
             utils.ferFlush();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new utilsError("Error a sendReady: "+e.getMessage());
         }
 
         return "REPLAY";
     }
 
-    public String receivedPlay(Socket socket) {
+    public String receivedPlay(Socket socket) throws utilsError{
         try {
             byte opCode = utils.llegirByte();
             if (opCode != 3) {
@@ -115,17 +112,14 @@ public class GameProtocol {
                 // data_inPut.close();
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return "ERROR";
-
+            throw new utilsError("Error a receivedPlay: "+e.getMessage());
         }
         //return true;
         return "SEADMIT";
 
     }
 
-    public String sendAdmit(Socket socket) {
+    public String sendAdmit(Socket socket) throws utilsError{
         try {
             byte opCode = 4;
             utils.escriureByte(opCode);
@@ -134,14 +128,13 @@ public class GameProtocol {
             System.out.println("C <------ ADMIT " +isAdmit+ " --------- S");
             utils.ferFlush();
 
-        } catch (IOException msg) {
-            throw new RuntimeException("error a sendAdmit");
-
+        } catch (IOException e) {
+            throw new utilsError("Error a sendAdmit: "+e.getMessage());
         }
         return "JUGANT";
     }
 
-    public boolean receivedAction(Socket socket) {
+    public boolean receivedAction(Socket socket) throws utilsError{
         try {
             byte opCode = utils.llegirByte();
             if (opCode != 5) {
@@ -159,13 +152,12 @@ public class GameProtocol {
                 return true;
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new utilsError("Error a receivedAction: "+e.getMessage());
         }
-        return false;
+
     }
 
-    public void sendResult(Socket socket) {
+    public void sendResult(Socket socket) throws utilsError {
         try {
             byte opCode = 6;
             utils.escriureByte(opCode);
@@ -300,18 +292,17 @@ public class GameProtocol {
                     System.out.println("Ha habido un error");
             }
 
-        } catch (IOException msg) {
-            throw new RuntimeException("error a result");
-
+        } catch (IOException e) {
+            throw new utilsError("Error a sendResult: "+e.getMessage());
         }
     }
 
-    public String jocAcabat(Socket socket) {
+    public String jocAcabat(Socket socket) throws utilsError{
         try {
             String resp = utils.llegirString();
             return resp.toUpperCase();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new utilsError("Error a jocAcabat: "+e.getMessage());
         }
     }
 

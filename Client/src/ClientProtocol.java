@@ -27,7 +27,7 @@ public class ClientProtocol {
         }
     }
 
-    public void sendHello(Socket socket,  int id, String name) {
+    public void sendHello(Socket socket,  int id, String name) throws utilsError{
         try {
             byte opCode = 1;
             utilitat.escriureByte((opCode)); // Capçalera, serà un 1, perque es el HELLO
@@ -43,13 +43,13 @@ public class ClientProtocol {
             utilitat.ferFlush();
             // data_outPut.close();
         } catch (IOException e) {
-            throw new RuntimeException(
-                    "I/O Error when creating or sending the output stream. Is the host connected?:\n" + e.getMessage());
+            throw new utilsError("I/O Error when creating or sending the output stream. Is the host connected?:\n" + e.getMessage());
         }
+
 
     }
 
-    public String recivedReady(Socket socket) {
+    public String recivedReady(Socket socket) throws utilsError{
         try {
             byte opCode = utilitat.llegirByte();
             if (opCode != 2) {
@@ -66,14 +66,12 @@ public class ClientProtocol {
                 // data_inPut.close();
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return "ERROR";
+            throw new utilsError(e.getMessage());
         }
         return "SEPLAY";
     }
 
-    public String sendPlay(Socket socket) {
+    public String sendPlay(Socket socket) throws utilsError{
         try {
             byte opCode = 3;
             utilitat.escriureByte(opCode);
@@ -82,13 +80,14 @@ public class ClientProtocol {
             utilitat.ferFlush();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new utilsError(e.getMessage());
         }
+
 
         return "READMIT";
     }
 
-    public String recivedAdmit(Socket socket) {
+    public String recivedAdmit(Socket socket) throws utilsError{
         try {
             byte opCode = utilitat.llegirByte();
             if (opCode != 4) {
@@ -113,17 +112,16 @@ public class ClientProtocol {
                 }
                 // data_inPut.close();
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return "ERROR";
+        }catch (IOException e) {
+            throw new utilsError(e.getMessage());
+
 
         }
         //return true;
         return "SEACTION";
     }
 
-    public String sendAction(Socket socket) {
+    public String sendAction(Socket socket) throws utilsError{
         String accion2 = "BLOCK";
         try {
             byte opCode = 5;
@@ -176,13 +174,13 @@ public class ClientProtocol {
             System.out.println("ACTION C ------- "+opCode+" "+ accion + " ---------> S");
             utilitat.ferFlush();
 
-        } catch (IOException error) {
-            throw new RuntimeException(error);
+        }catch (IOException e) {
+            throw new utilsError(e.getMessage());
         }
         return "JUGANT";
     }
 
-    public boolean receivedResult(Socket socket) {
+    public boolean receivedResult(Socket socket) throws utilsError{
         try {
             byte opCode = utilitat.llegirByte();
             if (opCode != 6) {
@@ -227,13 +225,12 @@ public class ClientProtocol {
                 }
 
             }
-        } catch (IOException msg) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException("error a receivedResult");
+        }catch (IOException e) {
+            throw new utilsError(e.getMessage());
         }
     }
 
-    public int finalGame(Socket socket) {
+    public int finalGame(Socket socket) throws utilsError{
         if(result.equals("ENDS0") || result.equals("ENDS1") || result.equals("DRAW0")) {
             switch (result) {
                 case "ENDS0":
@@ -261,8 +258,8 @@ public class ClientProtocol {
                 try {
                     utilitat.escriureString("SI");
                     utilitat.ferFlush();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                }catch (IOException e) {
+                    throw new utilsError(e.getMessage());
                 }
                 return 1;
                 //return true;
@@ -274,7 +271,7 @@ public class ClientProtocol {
                     return 2;
 
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new utilsError(e.getMessage());
                 }
                 //return false;
             }
@@ -283,8 +280,8 @@ public class ClientProtocol {
                 utilitat.escriureString("Segueix");
                 //return false;
                 return 3;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            }catch (IOException e) {
+                throw new utilsError(e.getMessage());
             }
         }
        /* try {
@@ -294,6 +291,7 @@ public class ClientProtocol {
         }*/
     }
 
+    /*
     public boolean recivedError(Socket socket) {
         DataInputStream data_inPut = null;
         try {
@@ -322,5 +320,5 @@ public class ClientProtocol {
             throw new RuntimeException(e);
         }
         return true;
-    }
+    }*/
 }

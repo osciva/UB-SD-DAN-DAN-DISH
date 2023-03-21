@@ -12,7 +12,7 @@ public class GameClient {
      * established protocol .
      */
 
-    public void play(Socket socket, String message, int id) throws IOException {
+    public void play(Socket socket, String message, int id) throws IOException, utilsError {
 
         ClientProtocol cp = new ClientProtocol(socket);
         cp.sendHello(socket, id, message);
