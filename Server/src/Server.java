@@ -42,21 +42,27 @@ public class Server {
         TO DO:
         Create a new GameHandler for every client.
          */
+        while(true){
+            try {
+                socket = ss.accept();
+                System.out.println("S- [TCP Accept]");
+            } catch (IOException e) {
+                throw new utilsError("I/O error when accepting a client:\n" + e.getMessage());
+            } catch (SecurityException e) {
+                throw new utilsError("Operation not accepted:\n" + e.getMessage());
+            } catch (IllegalBlockingModeException e) {
+                throw new utilsError("There is no connection ready to be accepted:\n"+e.getMessage());
+            }
 
-        try {
-            socket = ss.accept();
-            System.out.println("S- [TCP Accept]");
-        } catch (IOException e) {
-            throw new utilsError("I/O error when accepting a client:\n" + e.getMessage());
-        } catch (SecurityException e) {
-            throw new utilsError("Operation not accepted:\n" + e.getMessage());
-        } catch (IllegalBlockingModeException e) {
-            throw new utilsError("There is no connection ready to be accepted:\n"+e.getMessage());
+            //Creating a new GameHandler for every client.
+            Thread t = new Thread(new GameHandler(socket));
+            t.start();
+            /*
+            GameHandler gh = new GameHandler(socket);
+            gh.start();
+             */
         }
 
-        //Creating a new GameHandler for every client.
-        GameHandler gh = new GameHandler(socket);
-        gh.start();
 
 
     }
