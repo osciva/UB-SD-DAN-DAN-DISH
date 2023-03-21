@@ -24,6 +24,7 @@ public class GameHandler extends Thread {
         while (true) {
             String message = null;
             try {
+                //Thread t = new Thread(new Client(socket)); //falta saber com poder passar Client
                 play();
                 /*
                  * DataInputStream data_input = new DataInputStream(socket.getInputStream());
@@ -32,14 +33,14 @@ public class GameHandler extends Thread {
                  * data_input.close();
                  */
                 break;
-            } catch (IOException e) {
+            } catch (IOException | utilsError e) {
                 throw new RuntimeException("I/O Error when reading the client's message:\n" + e.getMessage());
             }
         }
 
     }
 
-    public void play() throws IOException {
+    public void play() throws IOException, utilsError {
         GameProtocol gh = new GameProtocol(socket);
         boolean isFinal = false;
         String resposta = "REHELLO";

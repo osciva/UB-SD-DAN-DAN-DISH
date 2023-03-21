@@ -7,7 +7,7 @@ import java.nio.channels.IllegalBlockingModeException;
 public class Server {
     public static final String INIT_ERROR = "Server should be initialized with -p <port>";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws utilsError {
 
         if (args.length != 2) {
             throw new IllegalArgumentException("Wrong amount of arguments.\n" + INIT_ERROR);
@@ -23,7 +23,7 @@ public class Server {
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            throw new NumberFormatException("<port> should be an Integer. Use 0 for automatic allocation.");
+            throw new utilsError("<port> should be an Integer. Use 0 for automatic allocation."+e.getMessage());
         }
 
         ServerSocket ss = null;
@@ -33,7 +33,7 @@ public class Server {
             System.out.println("Server up & listening on port "+port+"...\nPress Cntrl + C to stop.");
 
         } catch (IOException e) {
-            throw new RuntimeException("I/O error when opening the Server Socket:\n" + e.getMessage());
+            throw new utilsError("I/O error when opening the Server Socket:\n" + e.getMessage());
         }
 
         Socket socket = null;
@@ -47,11 +47,11 @@ public class Server {
             socket = ss.accept();
             System.out.println("S- [TCP Accept]");
         } catch (IOException e) {
-            throw new RuntimeException("I/O error when accepting a client:\n" + e.getMessage());
+            throw new utilsError("I/O error when accepting a client:\n" + e.getMessage());
         } catch (SecurityException e) {
-            throw new RuntimeException("Operation not accepted:\n"+e.getMessage());
+            throw new utilsError("Operation not accepted:\n" + e.getMessage());
         } catch (IllegalBlockingModeException e) {
-            throw new RuntimeException("There is no connection ready to be accepted:\n"+e.getMessage());
+            throw new utilsError("There is no connection ready to be accepted:\n"+e.getMessage());
         }
 
         //Creating a new GameHandler for every client.
