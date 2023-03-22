@@ -9,7 +9,7 @@ public class GameProtocol {
     private int id;
     private String accioRebuda;
     private int contBales;
-    private int balesClient;
+    //private int balesClient;
     int finalInt;
     private DataOutputStream data_outPut;
     private DataInputStream data_inPut;
@@ -26,7 +26,7 @@ public class GameProtocol {
         }
         this.socket = socket;
         this.finalInt = 3;
-        this.balesClient = 0;
+        //this.balesClient = 0;
     }
 
     public String receivedHello(Socket socket) throws utilsError {
@@ -151,8 +151,8 @@ public class GameProtocol {
 
                 this.id = utils.llegirInt();
                 String accio = utils.llegirAction();
-                int balas = utils.llegirInt();
-                this.balesClient = balas;
+                //int balas = utils.llegirInt();
+                //this.balesClient = balas;
                 this.accioRebuda = accio;
                 System.out.println("C ------- ACTION " + accio + " --------> S");
                 return true;
@@ -172,7 +172,7 @@ public class GameProtocol {
             if (this.contBales > 0) {
                 // Si tenim 2 o més bales i el client 1 augmenta la probabilitat de disparar i
                 // una mica de fer block
-                if (this.contBales >= 2 && this.balesClient <= 1) {
+               /* if (this.contBales >= 2 && this.balesClient <= 1) {
                     random = (int) (Math.random() * 7) + 1;
                 }
                 // Si el client no te bales i nosaltres si, disparem segur
@@ -180,7 +180,8 @@ public class GameProtocol {
                     random = 10;
                 } else {
                     random = (int) (Math.random() * 3) + 1;
-                }
+                }*/
+                random = (int) (Math.random() * 3) + 1;
                 // El 30% de vegades farà block per si de cas
                 if (random == 2 || random == 6) {
                     action = "BLOCK";
@@ -197,7 +198,7 @@ public class GameProtocol {
             } else {
                 // Si server no te bales i client te dos o mes, bloquejem amb bastant
                 // probabilitat
-                if (this.balesClient >= 2) {
+               /* if (this.balesClient >= 2) {
                     random = (int) (Math.random() * 7) + 2;
                     // El 14 % de probabilitat de fer CHARG
                     if (random == 4) {
@@ -208,7 +209,7 @@ public class GameProtocol {
                     else {
                         action = "BLOCK";
                     }
-                } else {
+                } else {*/
                     // Si el client te 1 bala augmentem la probabilitat de fer CHARG
                     random = (int) (Math.random() * 6) + 2;
                     // El 33% de cops fará un block
@@ -220,7 +221,7 @@ public class GameProtocol {
                     else {
                         action = "CHARG";
                     }
-                }
+                //}
             }
             String accioServer = "";
             String result = "";
