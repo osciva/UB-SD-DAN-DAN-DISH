@@ -9,6 +9,7 @@ public class GameProtocol {
     private int id;
     private String accioRebuda;
     private int contBales;
+    private int balesClient;
     int finalInt;
     private DataOutputStream data_outPut;
     private DataInputStream data_inPut;
@@ -25,6 +26,7 @@ public class GameProtocol {
         }
         this.socket = socket;
         this.finalInt = 3;
+        this.balesClient = 0;
     }
 
     public String receivedHello(Socket socket) throws utilsError{
@@ -147,6 +149,8 @@ public class GameProtocol {
 
                 this.id = utils.llegirInt();
                 String accio = utils.llegirAction();
+                int balas = utils.llegirInt();
+                this.balesClient = balas;
                 this.accioRebuda = accio;
                 System.out.println("C ------- ACTION " + accio + " --------> S");
                 return true;
@@ -164,24 +168,52 @@ public class GameProtocol {
             String action = "";
             int random = 0;
             if (this.contBales > 0) {
-                random = (int) (Math.random() * 3) + 1;
-                if (random == 1){
-                    action = "SHOOT";
+                // Si tenim 2 o més bales i el client 1 augmenta la probabilitat de disparar i una mica de fer block
+                if(this.contBales>=2 && this.balesClient <= 1){
+                    random = (int) (Math.random() * 7) + 1;
                 }
-                else if (random == 2){
+                // Si el client no te bales i nosaltres si, disparem segur
+                if(this.balesClient ==0){
+                    random = 10;
+                }else {
+                    random = (int) (Math.random() * 3) + 1;
+                }
+                // El 30% de vegades farà block per si de cas
+                if (random == 2 || random == 6){
                     action = "BLOCK";
                 }
-                else if (random == 3){
+                // Com ja tenim 2 bales, farà charge el 10% aprox de vegades
+                if (random == 3 ){
                     action = "CHARGE";
+                }
+                // El 60% aprox de vegades farà un shoot quan tinguem 2 o més bales
+                else{
+                    action = "SHOOT";
                 }
 
             } else {
-                random = (int) (Math.random() * 2) + 2;
-                if (random == 2){
-                    action = "BLOCK";
-                }
-                else if (random == 3){
-                    action = "CHARGE";
+                // Si server no te bales i client te dos o mes, bloquejem amb bastant probabilitat
+                if(this.balesClient >= 2){
+                    random = (int) (Math.random() * 7) + 2;
+                    // El 14 % de probabilitat de fer charge
+                    if (random == 4){
+                        action = "CHARGE";
+                    }
+                    // El 86% de probabilitat de fer Block ja que te dos o mes bales i segurament disparara
+                    else{
+                        action = "BLOCK";
+                    }
+                }else {
+                    // Si el client te 1 bala augmentem la probabilitat de fer charge
+                    random = (int) (Math.random() * 6) + 2;
+                    // El 33% de cops fará un block
+                    if (random == 2 || random == 4) {
+                        action = "BLOCK";
+                    }
+                    // Si no te bales el 66% de probabilitat de fer charge, ja que el client te una bala
+                    else {
+                        action = "CHARGE";
+                    }
                 }
             }
             String accioServer = "";
@@ -198,12 +230,14 @@ public class GameProtocol {
                         utils.escriureString(result);
                         System.out.println("Client i Servidor disparen --> empat");
                         this.finalInt = 2;
+                        this.contBales = 0;
                         break;
                     } else if (accioClient.equals("CHARGE")) {
                         result = "ENDS0"; // Client recarrega, Servidor dispara i guanya
                         utils.escriureString(result);
                         System.out.println("Client recarrega, Servidor dispara --> servidor guanya");
                         this.finalInt = 2;
+                        this.contBales = 0;
                         break;
                     } else {
                         result = "SAFE1"; // Client bloqueja, Servidor dispara, bloqueig del client
@@ -254,7 +288,7 @@ public class GameProtocol {
                         }
                         break;
                     }
-                case 3:
+                default:
                     accioServer = "CHARGE";
                     this.contBales += 1;
 
@@ -262,6 +296,7 @@ public class GameProtocol {
                         result = "ENDS1"; // Client dispara, client guanya
                         utils.escriureString(result);
                         System.out.println("Client dispara i Servidor recarrega --> client guanya");
+                        this.contBales = 0;
                         this.finalInt = 2;
                         break;
                     } else if (accioRebuda.toUpperCase().equals("CHARGE")) {
@@ -288,8 +323,8 @@ public class GameProtocol {
                         }
                         break;
                     }
-                default:
-                    System.out.println("Ha habido un error");
+                //default:
+                  //  System.out.println("Ha habido un error");
             }
 
         } catch (IOException e) {

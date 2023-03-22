@@ -46,42 +46,11 @@ public class GameClient {
                             cp.sendAction(socket); // Es segueix amb el joc
                         }
                     }
-        }
-        /*if (cp.recivedReady(socket)) {
-            cp.sendPlay(socket);
-        }
-        if (cp.recivedAdmit(socket)) {
-            cp.sendAction(socket);
-        }
-        while(socket.isConnected()) {
-            cp.receivedResult(socket);
-            int num = cp.finalGame(socket);
-            if(num == 1) {
-                cp.sendPlay(socket);
-                break;
-            }else if(num == 2) {
-                socket.close();
-                break;
-            }else if(num == 3) {
-                cp.sendAction(socket);
-            }*/
-                /*if (temp == true) {
-                    cp.sendAction(socket);
-                }
-                if (temp == false) {
-                    if(cp.finalGame(socket)){
-                        cp.sendPlay(socket);
-                    }else{
-                        socket.close();
-                        break;
-                    }*/
-                    //socket.close();
-                    //break;
-
-                }
             }
 
-
+        }
+        System.out.println("C- [conexion closed]");
+    }
         /*
          * else if(cp.recivedError(socket)){
          * System.out.println("Final del juego por error");
@@ -92,5 +61,4 @@ public class GameClient {
 
         // Add game execution logic here
     //}
-
 }
