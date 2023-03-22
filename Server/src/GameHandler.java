@@ -86,6 +86,7 @@ public class GameHandler extends Thread {
                     }
                 }
             }
+        System.out.println("S- [conexion closed]");
         }
         /*GameProtocol gh = new GameProtocol(socket);
         boolean isFinal = false;

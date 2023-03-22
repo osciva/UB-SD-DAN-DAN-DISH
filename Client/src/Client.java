@@ -46,13 +46,14 @@ public class Client {
         }
 
         String message = "";
-        int id = 0;
+        int id =(int) (Math.random() * 90000) + 10000;
         Scanner sc = new Scanner(System.in);
 
         while (message.isEmpty()) {
-            System.out.println("Write your nickname for DAN DAN DISH: ");
+            System.out.println("Write your nickname for DAN DAN DISH please: ");
             message = sc.nextLine();
-            System.out.println("now, choose the integer that will represent your lobby during the game: ");
+            System.out.println("El teu id es: " + id);
+            /*System.out.println("now, choose the integer that will represent your lobby during the game: ");
             boolean valido = false;
 
             while (!valido) {
@@ -63,7 +64,7 @@ public class Client {
                     System.out.println("Error: the chosen value isn't an int... Try again please:\n");
                     sc.next(); // descarta el valor inválido
                 }
-            }
+            }*/
         }
 
         /*
