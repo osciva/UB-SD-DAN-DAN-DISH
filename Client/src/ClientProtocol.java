@@ -120,31 +120,31 @@ public class ClientProtocol {
             utilitat.escriureByte(opCode);
             utilitat.escriureInt(id);
             if (contBales > 0) {
-                System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+                System.out.println("Què vols fer? (SHOOT, BLOCK o CHARG)");
                 accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
             } else {
-                System.out.println("Què vols fer? (BLOCK o CHARGE)");
+                System.out.println("Què vols fer? (BLOCK o CHARG)");
                 accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
-                while (!accion2.equalsIgnoreCase("BLOCK") && !accion2.equalsIgnoreCase("CHARGE")) {
-                    System.out.println("Nomes pots fer BLOCK o CHARGE...");
-                    System.out.println("Què vols fer? (BLOCK o CHARGE)");
+                while (!accion2.equalsIgnoreCase("BLOCK") && !accion2.equalsIgnoreCase("CHARG")) {
+                    System.out.println("Nomes pots fer BLOCK o CHARG...");
+                    System.out.println("Què vols fer? (BLOCK o CHARG)");
                     accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
                 }
             }
             String accion = accion2;
             while (!accion.equalsIgnoreCase("SHOOT") && !accion.equalsIgnoreCase("BLOCK")
-                    && !accion.equalsIgnoreCase("CHARGE")) {
+                    && !accion.equalsIgnoreCase("CHARG")) {
                 System.out.println("Perdona, no t'he entés... ");
                 if (contBales > 0) {
-                    System.out.println("Què vols fer? (SHOOT, BLOCK o CHARGE)");
+                    System.out.println("Què vols fer? (SHOOT, BLOCK o CHARG)");
                 } else {
-                    System.out.println("Què vols fer? (BLOCK o CHARGE)");
+                    System.out.println("Què vols fer? (BLOCK o CHARG)");
                 }
                 accion = scanner.nextLine();
 
             }
             System.out.println("La acció triada es: " + accion.toUpperCase(Locale.ROOT));
-            if (accion.toUpperCase().equals("CHARGE")) {
+            if (accion.toUpperCase().equals("CHARG")) {
                 this.contBales += 1;
                 if (contBales == 1) {
                     System.out.println("EL CLIENT ARA TE " + contBales + " BALA");
