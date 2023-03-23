@@ -33,11 +33,11 @@ public class ClientProtocol {
             utilitat.escriureByte((opCode)); // Capçalera, serà un 1, perque es el HELLO
             utilitat.escriureInt(id);
             this.id = id;
-            for (int i = 0; i < name.length(); i++) {
+            utilitat.escriureString(name);
+            /*for (int i = 0; i < name.length(); i++) {
                 char p = name.charAt(i);
                 utilitat.escriureChar(p);
-            }
-            utilitat.escriureChar('4');
+            }*/
             utilitat.escriureByte((byte) 0); // Indica el final de trama
             utilitat.escriureByte((byte) 0); // Indica el final de trama
             System.out.println("HELLO C ------- " + opCode + " " + this.id + " " + name + "00 ---------> S");
@@ -93,7 +93,7 @@ public class ClientProtocol {
                 return "ERROR";
 
             } else {
-                int isAdmit = utilitat.llegirInt();
+                byte isAdmit = utilitat.llegirByte();
                 if (isAdmit == 1) {
                     boolean admit = true;
                     System.out.println("ADMIT C <------ " + opCode + " 1 " + " ---------- S");
@@ -160,7 +160,6 @@ public class ClientProtocol {
                 }
             }
             utilitat.escriureAction(accion);
-            utilitat.escriureInt(this.contBales);
             System.out.println("ACTION C ------- " + opCode + " " + accion + " ---------> S");
             utilitat.ferFlush();
 

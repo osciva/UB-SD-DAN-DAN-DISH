@@ -127,8 +127,8 @@ public class GameProtocol {
         try {
             byte opCode = 4;
             utils.escriureByte(opCode);
-            int isAdmit = 1; // 1 si admitim, 0 si no (potser si hi ha un error enviem 0)
-            utils.escriureInt(isAdmit);
+            byte isAdmit = 1; // 1 si admitim, 0 si no (potser si hi ha un error enviem 0)
+            utils.escriureByte(isAdmit);
             System.out.println("C <------ ADMIT " + isAdmit + " --------- S");
             utils.ferFlush();
 
@@ -151,9 +151,13 @@ public class GameProtocol {
 
                 this.id = utils.llegirInt();
                 String accio = utils.llegirAction();
-                int balas = utils.llegirInt();
-                this.balesClient = balas;
                 this.accioRebuda = accio;
+                if (accio.equals("SHOOT")) {
+                    this.balesClient -= 1;
+                }
+                if (accio.equals("CHARG")) {
+                    this.balesClient += 1;
+                }
                 System.out.println("C ------- ACTION " + accio + " --------> S");
                 return true;
             }
@@ -181,6 +185,7 @@ public class GameProtocol {
                 } else {
                     random = (int) (Math.random() * 3) + 1;
                 }
+                random = (int) (Math.random() * 3) + 1;
                 // El 30% de vegades farà block per si de cas
                 if (random == 2 || random == 6) {
                     action = "BLOCK";
@@ -235,6 +240,7 @@ public class GameProtocol {
                         result = "DRAW0"; // Client i Servidor disparen, empat
                         utils.escriureString(result);
                         System.out.println("Client i Servidor disparen --> empat");
+                        this.balesClient = 0;
                         this.finalInt = 2;
                         this.contBales = 0;
                         break;
@@ -242,6 +248,7 @@ public class GameProtocol {
                         result = "ENDS0"; // Client recarrega, Servidor dispara i guanya
                         utils.escriureString(result);
                         System.out.println("Client recarrega, Servidor dispara --> servidor guanya");
+                        this.balesClient = 0;
                         this.finalInt = 2;
                         this.contBales = 0;
                         break;
@@ -261,6 +268,7 @@ public class GameProtocol {
                     accioServer = "BLOCK";
                     if (accioClient.equals("SHOOT")) {
                         result = "SAFE0"; // Client dispara, Servidor bloqueja.
+                        // this.balesClient -= 1;
                         utils.escriureString(result);
                         System.out.println("Client dispara, Servidor bloqueja --> el joc segueix");
                         if (this.contBales == 1) {
@@ -272,6 +280,7 @@ public class GameProtocol {
                     } else if (accioClient.equals("CHARG")) {
                         result = "PLUS1"; // Client recarrega una bala perque servidor bloqueja
                         utils.escriureString(result);
+                        // this.balesClient += 1;
                         System.out.println("Client recarrega una bala i servidor bloqueja --> el joc segueix");
                         if (this.contBales == 1) {
                             System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALA");
@@ -299,11 +308,13 @@ public class GameProtocol {
                         utils.escriureString(result);
                         System.out.println("Client dispara i Servidor recarrega --> client guanya");
                         this.contBales = 0;
+                        this.balesClient = 0;
                         this.finalInt = 2;
                         break;
                     } else if (accioRebuda.toUpperCase().equals("CHARG")) {
                         result = "PLUS2"; // Client i Servidor recarreguen una bala
                         utils.escriureString(result);
+                        // this.balesClient += 1;
                         System.out.println("Client i Servidor recarreguen una bala --> el joc segueix");
                         if (this.contBales == 1) {
                             System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALA");
