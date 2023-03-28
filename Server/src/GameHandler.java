@@ -9,6 +9,7 @@ import java.net.Socket;
 
 public class GameHandler extends Thread {
     private Socket socket;
+    private util utils;
 
     public GameHandler(Socket socket) {
         this.socket = socket;
@@ -47,17 +48,22 @@ public class GameHandler extends Thread {
         while (!resposta.equals("FINAL")) {
             switch (resposta.toUpperCase()) {
                 case "ERROR":
-                    gh.receivedError(socket);
+                    utils.receiveError();
                     resposta = "FINAL";
                     System.out.println("Final del joc per error");
+                    break;
                 case "REHELLO":
                     resposta = gh.receivedHello(socket);
+                    break;
                 case "SEREADY":
                     resposta = gh.sendReady(socket);
+                    break;
                 case "REPLAY":
                     resposta = gh.receivedPlay(socket);
+                    break;
                 case "SEADMIT":
                     resposta = gh.sendAdmit(socket);
+                    break;
                 case "JUGANT":
                     isFinal = false;
                     while (socket.isConnected()) {
@@ -67,6 +73,7 @@ public class GameHandler extends Thread {
                         }
                         if (gh.receivedAction(socket)) {
                             gh.sendResult(socket);
+                            break;
                         }
                         String resp = gh.jocAcabat(socket);
                         switch (resp) {
@@ -81,6 +88,7 @@ public class GameHandler extends Thread {
                                 break;
                             default:
                                 System.out.println("seguim jugant");
+                                break;
                         }
 
                     }

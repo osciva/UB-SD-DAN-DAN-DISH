@@ -54,6 +54,62 @@ public class util {
      * error-> codi operació 8 (opcode: 1 byte , ErrCode: 1 byte , Msg: String , 00:
      * 2 bytes)
      */
+    private final byte  CARACTER_NO_RECONEGUT = 1,
+    MISSATGE_DESCONEGUT = 2, MISSATGE_FORA_DE_PROTOCOL = 3, INICI_DE_SESSIO_INCORRECTE = 4,
+    PARAULA_DESCONEGUDA = 5, MISSATGE_MAL_FORMAT = 6, ERROR_DESCONEGUT = 99;
+
+    public void sendError(byte errCode) throws IOException {
+        String error ="";
+        switch (errCode) {
+            case CARACTER_NO_RECONEGUT:
+                error = "CARÀCTER NO RECONEGUT";
+            case MISSATGE_DESCONEGUT:
+                error = "MISSATGE DESCONEGUT";
+            case MISSATGE_FORA_DE_PROTOCOL:
+                error = "MISSATGE FORA DE PROTOCOL";
+            case INICI_DE_SESSIO_INCORRECTE:
+                error= "INICI DE SESSIÓ INCORRECTE";
+            case PARAULA_DESCONEGUDA:
+                error= "PARAULA DESCONEGUDA";
+            case MISSATGE_MAL_FORMAT:
+                error= "MISSATGE MAL FORMAT";
+            default:
+                error= "ERROR DESCONEGUT";
+        };
+        try {
+            dos.writeByte(8);
+            dos.writeByte(errCode);
+            dos.writeChars(error);
+            dos.writeByte(0);
+            dos.writeByte(0);
+            dos.flush();
+            dos.close();
+        } catch (IOException e) {
+            throw new RuntimeException("No es pot enviar el missatge d'error: " + e.getMessage());
+        }
+
+    }
+
+    public void receiveError() throws IOException {
+
+        try {
+            byte opcode = dis.readByte();
+            byte error = dis.readByte();
+            char fin = dis.readChar();
+            String msg="";
+            while (fin != 0) {
+                msg += fin;
+                fin = dis.readChar();
+            }
+            dis.close();
+            System.out.println("Error: " + error + ": " + msg);
+        } catch (IOException e) {
+            throw new RuntimeException("No s'ha pogut enviar l'error" + e.getMessage());
+        }
+
+    }
+
+
 
     /* Llegir un enter */
 
@@ -84,64 +140,38 @@ public class util {
      */
 
     public String llegirString() throws IOException {
-
-        int a = 1;
+        char a = 'b';
         String name = "";
-        while (a != 52) {
+        while (a != (byte) 0) {
             char e = this.dis.readChar();
-            if (e != 52) {
+
+            if (e != (byte) 0) {
                 name += (char) e;
+            } else {
+                break; // Sale del bucle while si se encuentra un 0
             }
             a = e;
         }
-
         return name;
-
     }
 
     /* Escriure un string */
 
     public void escriureString(String stringData) throws IOException {
 
-        // int headerLength =3; //cadena de hasta 65535 caracteres en UTF-8
-        // byte[] headerBytes = new byte[headerLength];
-        // String headerString;
-        // int stringLength = 0;
-
-        // // Se crea la cabecera con la cantidad de bytes que codifican la longitud
-        // stringLength = stringData.length();
-
-        // headerString = String.valueOf(stringLength);
-        // int headerStringLength;
-        // // comprueba si la longitud de la cadena de la cabecera es menor que la
-        // longitud esperada para la cabecera.
-        // // De ser así, se añaden ceros al principio de la cadena hasta que tenga la
-        // longitud esperada.
-        // if ((headerStringLength = headerString.length()) < headerLength) {
-        // for (int i = headerStringLength; i < headerLength; i++) {
-        // headerString = "0" + headerString;
-        // }
-        // }
-        // for (int i = 0; i < headerLength; i++) {
-        // headerBytes[i] = (byte) headerString.charAt(i);
-        // }
-
-        // // Se envia la cabecera
-        // this.dos.write(headerBytes, 0, headerLength);
-
-        // // se envia la cadena usando writeBytes
-        // this.dos.writeBytes(stringData);
         String msg = stringData;
         for (int i = 0; i < msg.length(); i++) {
             char p = msg.charAt(i);
             this.dos.writeChar(p);
         }
-        this.dos.writeChar('4');
+        this.dos.writeChar(0);
+        this.dos.writeChar(0);
+
+
     }
 
     // llegir 1 byte
     public byte llegirByte() throws IOException {
-
         return this.dis.readByte();
     }
 
@@ -173,12 +203,25 @@ public class util {
 
     // llegir la acció
     public String llegirAction() throws IOException {
-        return llegirString();
+
+        String name = "";
+        for(int i =0;i<5;i++){
+            char e = this.dis.readChar();
+            name += (char) e;
+        }
+        return name;
     }
 
     // escriure la acció
     public void escriureAction(String action) throws IOException {
-        escriureString(action);
+        String msg = action;
+        for (int i = 0; i < msg.length(); i++) {
+            char p = msg.charAt(i);
+            this.dos.writeChar(p);
+
+        }
+
+        //this.dos.writeChar(0);
     }
 
 }

@@ -30,7 +30,7 @@ public class ClientProtocol {
     public void sendHello(Socket socket, int id, String name) throws utilsError {
         try {
             byte opCode = 1;
-            utilitat.escriureByte((opCode)); // Capçalera, serà un 1, perque es el HELLO
+            utilitat.escriureByte((opCode));
             utilitat.escriureInt(id);
             this.id = id;
             utilitat.escriureString(name);
@@ -38,14 +38,14 @@ public class ClientProtocol {
                 char p = name.charAt(i);
                 utilitat.escriureChar(p);
             }*/
-            utilitat.escriureByte((byte) 0); // Indica el final de trama
-            utilitat.escriureByte((byte) 0); // Indica el final de trama
+
             System.out.println("HELLO C ------- " + opCode + " " + this.id + " " + name + "00 ---------> S");
-            utilitat.ferFlush();
+
             // data_outPut.close();
+            utilitat.ferFlush();
         } catch (IOException e) {
-            throw new utilsError(
-                    "I/O Error when creating or sending the output stream. Is the host connected?:\n" + e.getMessage());
+            throw new utilsError("I/O Error when creating or sending the output " +
+                    "stream. " + "Is the host connected?:\n" + e.getMessage());
         }
 
     }
@@ -55,7 +55,7 @@ public class ClientProtocol {
             byte opCode = utilitat.llegirByte();
             if (opCode != 2) {
                 byte error = 4;
-                System.out.println("Error al opCode");
+                utilitat.sendError(error);
                 return "ERROR";
             } else {
                 this.id = utilitat.llegirInt();
@@ -90,6 +90,7 @@ public class ClientProtocol {
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
+                utilitat.sendError(error);
                 return "ERROR";
 
             } else {
@@ -101,24 +102,25 @@ public class ClientProtocol {
                     byte error = 4;
                     boolean admit = false;
                     System.out.println("you were not admitted");
+                    utilitat.sendError(error);
                     // String msg = "NO S'ADMATEIX";
                     // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 }
             }
         } catch (IOException e) {
-            throw new utilsError(e.getMessage());
+            throw new utilsError("Error a receivedAdmit: " +e.getMessage());
 
         }
         // return true;
         return "SEACTION";
     }
 
-    public String sendAction(Socket socket) throws utilsError {
+    public String sendAction(Socket socket) throws utilsError, IOException {
         String accion2 = "BLOCK";
         try {
             byte opCode = 5;
             utilitat.escriureByte(opCode);
-            utilitat.escriureInt(id);
+
             if (contBales > 0) {
                 System.out.println("Què vols fer? (SHOOT, BLOCK o CHARG)");
                 accion2 = scanner.nextLine().toUpperCase(Locale.ROOT);
@@ -164,6 +166,9 @@ public class ClientProtocol {
             utilitat.ferFlush();
 
         } catch (IOException e) {
+            byte error = 5;
+            utilitat.sendError(error);
+            System.out.println("Error enviant acció: Moviment Desconegut.");
             throw new utilsError(e.getMessage());
         }
         return "JUGANT";
@@ -180,7 +185,7 @@ public class ClientProtocol {
                 return false;
             } else {
 
-                this.result = utilitat.llegirString();
+                this.result = utilitat.llegirAction();
                 System.out.println("RESULT S <------ " + opCode + " " + this.result + " ---------- C");
                 switch (result) {
                     case "PLUS0":
@@ -245,7 +250,7 @@ public class ClientProtocol {
             }
             if (resposta.toUpperCase().equals("SI")) {
                 try {
-                    utilitat.escriureString("SI");
+                    utilitat.escriureAction("SI");
                     utilitat.ferFlush();
                 } catch (IOException e) {
                     throw new utilsError(e.getMessage());
@@ -254,7 +259,7 @@ public class ClientProtocol {
 
             } else {
                 try {
-                    utilitat.escriureString("NO");
+                    utilitat.escriureAction("NO");
                     utilitat.ferFlush();
                     return 2;
 
@@ -264,7 +269,7 @@ public class ClientProtocol {
             }
         } else {
             try {
-                utilitat.escriureString("Segueix");
+                utilitat.escriureAction("Segueix");
                 return 3;
             } catch (IOException e) {
                 throw new utilsError(e.getMessage());
