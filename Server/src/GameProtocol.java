@@ -52,7 +52,6 @@ public class GameProtocol {
 
                 byte segon = utils.llegirByte();
 
-
                 // System.out.println("The client sent the following message:\n" + opCode + id +
                 // name + buffer);
                 // data_inPut.close();
@@ -91,7 +90,6 @@ public class GameProtocol {
     public String sendReady(Socket socket) throws utilsError, IOException {
         try {
 
-
             byte opCode = 2;
             utils.escriureByte(opCode);
 
@@ -102,12 +100,12 @@ public class GameProtocol {
             utils.ferFlush();
 
         } catch (IOException e) {
-            utils.sendError((byte)4);
+            utils.sendError((byte) 4);
             throw new utilsError("Error a sendReady: " + e.getMessage());
 
             /*
-            System.out.println("ERRCODE: 4, MSG: INICI DE SESSIÓ INCORRECTE ");
-            return "ERROR";
+             * System.out.println("ERRCODE: 4, MSG: INICI DE SESSIÓ INCORRECTE ");
+             * return "ERROR";
              */
         }
 
@@ -148,7 +146,7 @@ public class GameProtocol {
             utils.ferFlush();
 
         } catch (IOException e) {
-            utils.sendError((byte)4);
+            utils.sendError((byte) 4);
             throw new utilsError("Error a sendAdmit: " + e.getMessage());
         }
         return "JUGANT";
@@ -243,22 +241,23 @@ public class GameProtocol {
                     }
                 }
             }
-            //String accioServer = "";
+            // String accioServer = "";
             String result = "";
             String accioClient = this.accioRebuda.toUpperCase();
             System.out.println("La accio escollida per el server es: " + random + " = " + action);
             switch (random) {
                 case 1:
-                    //accioServer = "SHOOT";
+                    // accioServer = "SHOOT";
                     this.contBales -= 1;
 
                     if (accioClient.equals("SHOOT")) {
                         result = "DRAW0"; // Client i Servidor disparen, empat
                         utils.escriureAction(result);
                         System.out.println("Client i Servidor disparen --> empat");
-                        this.balesClient = 0;
-                        this.finalInt = 2;
-                        this.contBales = 0;
+                        // this.balesClient = 0;
+                        // this.finalInt = 2;
+                        // this.contBales = 0;
+                        this.finalInt = 1;
                         utils.ferFlush();
                         break;
                     } else if (accioClient.equals("CHARG")) {
@@ -284,7 +283,7 @@ public class GameProtocol {
                     }
 
                 case 2:
-                    //accioServer = "BLOCK";
+                    // accioServer = "BLOCK";
                     if (accioClient.equals("SHOOT")) {
                         result = "SAFE0"; // Client dispara, Servidor bloqueja.
                         // this.balesClient -= 1;
@@ -321,7 +320,7 @@ public class GameProtocol {
                         break;
                     }
                 default:
-                    //accioServer = "CHARG";
+                    // accioServer = "CHARG";
                     this.contBales += 1;
 
                     if (accioRebuda.toUpperCase().equals("SHOOT")) {
@@ -363,7 +362,7 @@ public class GameProtocol {
             }
 
         } catch (IOException e) {
-            utils.sendError((byte)4);
+            utils.sendError((byte) 4);
             throw new utilsError("Error a sendResult: " + e.getMessage());
         }
     }
@@ -376,7 +375,5 @@ public class GameProtocol {
             throw new utilsError("Error a jocAcabat: " + e.getMessage());
         }
     }
-
-
 
 }

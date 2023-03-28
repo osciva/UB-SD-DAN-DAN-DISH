@@ -34,10 +34,12 @@ public class ClientProtocol {
             utilitat.escriureInt(id);
             this.id = id;
             utilitat.escriureString(name);
-            /*for (int i = 0; i < name.length(); i++) {
-                char p = name.charAt(i);
-                utilitat.escriureChar(p);
-            }*/
+            /*
+             * for (int i = 0; i < name.length(); i++) {
+             * char p = name.charAt(i);
+             * utilitat.escriureChar(p);
+             * }
+             */
 
             System.out.println("HELLO C ------- " + opCode + " " + this.id + " " + name + "00 ---------> S");
 
@@ -108,7 +110,7 @@ public class ClientProtocol {
                 }
             }
         } catch (IOException e) {
-            throw new utilsError("Error a receivedAdmit: " +e.getMessage());
+            throw new utilsError("Error a receivedAdmit: " + e.getMessage());
 
         }
         // return true;
@@ -197,6 +199,9 @@ public class ClientProtocol {
                     case "PLUS2":
                         System.out.println("Client i Servidor recarreguen una bala");
                         break;
+                    case "DRAW0":
+                        System.out.println("Client i Servidor disparen ambdós i sobreviuen");
+                        break;
                     case "SAFE0":
                         System.out.println("Client dispara i Servidor bloqueja la bala");
                         break;
@@ -208,7 +213,9 @@ public class ClientProtocol {
                         break;
 
                 }
-                if (!this.result.equals("DRAW0") && !this.result.equals("ENDS0") && !this.result.equals("ENDS1")) {
+                // if (!this.result.equals("DRAW0") && !this.result.equals("ENDS0") &&
+                // !this.result.equals("ENDS1")) {
+                if (!this.result.equals("ENDS0") && !this.result.equals("ENDS1")) {
                     System.out.println("el joc segueix");
                     return true;
                 } else {
@@ -222,7 +229,9 @@ public class ClientProtocol {
     }
 
     public int finalGame(Socket socket) throws utilsError {
-        if (result.equals("ENDS0") || result.equals("ENDS1") || result.equals("DRAW0")) {
+        // if (result.equals("ENDS0") || result.equals("ENDS1") ||
+        // result.equals("DRAW0")) {
+        if (result.equals("ENDS0") || result.equals("ENDS1")) {
             switch (result) {
                 case "ENDS0":
                     System.out.println("Servidor ha disparat mentres Client recarregava --> Guanya Servidor");
@@ -232,41 +241,48 @@ public class ClientProtocol {
                     System.out.println("Client ha disparat mentres Servidor recarregava --> Guanya Client");
                     this.contBales = 0;
                     break;
-                case "DRAW0":
-                    System.out.println("Ambdós jugadors han disparat --> Empat");
-                    this.contBales = 0;
-                    break;
+                /*
+                 * case "DRAW0":
+                 * System.out.println("Ambdós jugadors han disparat --> Empat");
+                 * this.contBales = 0;
+                 * break;
+                 */
 
             }
             String resposta = "";
             System.out.println("Vols jugar una altra partida? (Si o No) ");
-            Scanner sc = new Scanner(System.in);
-            resposta = sc.nextLine();
-            while (!resposta.equalsIgnoreCase("SI") && !resposta.equalsIgnoreCase("NO")) {
-                System.out.println("Perdona, no t'he entés... ");
-                System.out.println("Vols jugar una altra partida? (Si o No) ");
-                sc = new Scanner(System.in);
-                resposta = sc.nextLine();
-            }
-            if (resposta.toUpperCase().equals("SI")) {
-                try {
-                    utilitat.escriureAction("SI");
-                    utilitat.ferFlush();
-                } catch (IOException e) {
-                    throw new utilsError(e.getMessage());
-                }
-                return 1;
-
-            } else {
-                try {
-                    utilitat.escriureAction("NO");
-                    utilitat.ferFlush();
-                    return 2;
-
-                } catch (IOException e) {
-                    throw new utilsError(e.getMessage());
-                }
-            }
+            System.out.println("Nova partida ");
+            return 1;
+            /*
+             * Scanner sc = new Scanner(System.in);
+             * resposta = sc.nextLine();
+             * while (!resposta.equalsIgnoreCase("SI") && !resposta.equalsIgnoreCase("NO"))
+             * {
+             * System.out.println("Perdona, no t'he entés... ");
+             * System.out.println("Vols jugar una altra partida? (Si o No) ");
+             * sc = new Scanner(System.in);
+             * resposta = sc.nextLine();
+             * }
+             * if (resposta.toUpperCase().equals("SI")) {
+             * try {
+             * utilitat.escriureAction("SI");
+             * utilitat.ferFlush();
+             * } catch (IOException e) {
+             * throw new utilsError(e.getMessage());
+             * }
+             * return 1;
+             * 
+             * } else {
+             * try {
+             * utilitat.escriureAction("NO");
+             * utilitat.ferFlush();
+             * return 2;
+             * 
+             * } catch (IOException e) {
+             * throw new utilsError(e.getMessage());
+             * }
+             * }
+             */
         } else {
             try {
                 utilitat.escriureAction("Segueix");
