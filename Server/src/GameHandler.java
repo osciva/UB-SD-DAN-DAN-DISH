@@ -61,36 +61,45 @@ public class GameHandler extends Thread {
                 case "REPLAY":
                     resposta = gh.receivedPlay(socket);
                     break;
+               /* case "REPLAY2":
+                    resposta = gh.receivedPlay2(socket);
+                    break;*/
                 case "SEADMIT":
                     resposta = gh.sendAdmit(socket);
                     break;
                 case "JUGANT":
                     isFinal = false;
-                    while (socket.isConnected()) {
-                        if (socket.isClosed() || isFinal) {
-                            System.out.println("Final d'aquesta partida");
-                            break;
-                        }
-                        if (gh.receivedAction(socket)) {
-                            gh.sendResult(socket);
-                            break;
-                        }
-                        String resp = gh.jocAcabat(socket);
-                        switch (resp) {
-                            case "SI":
-                                isFinal = true;
-                                resposta = "REPLAY";
+                    try {
+                        while (socket.isConnected()) {
+                            if (socket.isClosed() || isFinal) {
+                                System.out.println("Final d'aquesta partida");
                                 break;
-                            case "NO":
-                                isFinal = true;
-                                resposta = "FINAL";
-                                socket.close();
+                            }
+                            if (gh.receivedAction(socket)) {
+                                gh.sendResult(socket);
                                 break;
-                            default:
-                                System.out.println("seguim jugant");
-                                break;
-                        }
+                            }
+                            String resp = gh.jocAcabat(socket);
+                            switch (resp) {
+                                case "SI":
+                                    isFinal = true;
+                                    //gh.especial();
+                                    resposta = "REPLAY";
+                                    //resposta = "REPLAY2";
+                                    break;
+                                case "NO":
+                                    isFinal = true;
+                                    resposta = "FINAL";
+                                    socket.close();
+                                    break;
+                                default:
+                                    System.out.println("seguim jugant");
+                                    break;
+                            }
 
+                        }
+                    }catch (IOException error){
+                        System.out.println("El client s'ha desconnectat");
                     }
                 }
             }
