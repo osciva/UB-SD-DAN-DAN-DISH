@@ -1,12 +1,7 @@
 import java.io.IOException;
 import java.io.DataOutputStream;
 import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.io.ByteArrayOutputStream;
 
 public class util {
 
@@ -54,12 +49,12 @@ public class util {
      * error-> codi operació 8 (opcode: 1 byte , ErrCode: 1 byte , Msg: String , 00:
      * 2 bytes)
      */
-    private final byte  CARACTER_NO_RECONEGUT = 1,
-    MISSATGE_DESCONEGUT = 2, MISSATGE_FORA_DE_PROTOCOL = 3, INICI_DE_SESSIO_INCORRECTE = 4,
-    PARAULA_DESCONEGUDA = 5, MISSATGE_MAL_FORMAT = 6, ERROR_DESCONEGUT = 99;
+    private final byte CARACTER_NO_RECONEGUT = 1,
+            MISSATGE_DESCONEGUT = 2, MISSATGE_FORA_DE_PROTOCOL = 3, INICI_DE_SESSIO_INCORRECTE = 4,
+            PARAULA_DESCONEGUDA = 5, MISSATGE_MAL_FORMAT = 6, ERROR_DESCONEGUT = 99;
 
     public void sendError(byte errCode) throws IOException {
-        String error ="";
+        String error = "";
         switch (errCode) {
             case CARACTER_NO_RECONEGUT:
                 error = "CARÀCTER NO RECONEGUT";
@@ -68,14 +63,15 @@ public class util {
             case MISSATGE_FORA_DE_PROTOCOL:
                 error = "MISSATGE FORA DE PROTOCOL";
             case INICI_DE_SESSIO_INCORRECTE:
-                error= "INICI DE SESSIÓ INCORRECTE";
+                error = "INICI DE SESSIÓ INCORRECTE";
             case PARAULA_DESCONEGUDA:
-                error= "PARAULA DESCONEGUDA";
+                error = "PARAULA DESCONEGUDA";
             case MISSATGE_MAL_FORMAT:
-                error= "MISSATGE MAL FORMAT";
+                error = "MISSATGE MAL FORMAT";
             default:
-                error= "ERROR DESCONEGUT";
-        };
+                error = "ERROR DESCONEGUT";
+        }
+        ;
         try {
             dos.writeByte(8);
             dos.writeByte(errCode);
@@ -96,7 +92,7 @@ public class util {
             byte opcode = dis.readByte();
             byte error = dis.readByte();
             char fin = dis.readChar();
-            String msg="";
+            String msg = "";
             while (fin != 0) {
                 msg += fin;
                 fin = dis.readChar();
@@ -108,8 +104,6 @@ public class util {
         }
 
     }
-
-
 
     /* Llegir un enter */
 
@@ -148,11 +142,22 @@ public class util {
             if (e != (byte) 0) {
                 name += (char) e;
             } else {
+                // this.dos.writeChar((byte) 0);
                 break; // Sale del bucle while si se encuentra un 0
             }
             a = e;
         }
         return name;
+        /*
+         * StringBuilder str = new StringBuilder();
+         * char c;
+         * 
+         * while((c = dis.readChar()) != 0){
+         * str.append(c);
+         * }
+         * return str.toString();
+         */
+
     }
 
     /* Escriure un string */
@@ -167,7 +172,6 @@ public class util {
         this.dos.writeChar(0);
         this.dos.writeChar(0);
 
-
     }
 
     // llegir 1 byte
@@ -178,6 +182,18 @@ public class util {
     // escriure 1 byte
     public void escriureByte(byte opcode) throws IOException {
         this.dos.writeByte(opcode);
+    }
+
+    public String readStringCorrect() throws IOException {
+        StringBuilder str = new StringBuilder();
+
+        char c;
+
+        while ((c = dis.readChar()) != 0) {
+            str.append(c);
+        }
+        return str.toString();
+
     }
 
     public void ferFlush() throws IOException {
@@ -205,7 +221,7 @@ public class util {
     public String llegirAction() throws IOException {
 
         String name = "";
-        for(int i =0;i<5;i++){
+        for (int i = 0; i < 5; i++) {
             char e = this.dis.readChar();
             name += (char) e;
         }
@@ -221,7 +237,7 @@ public class util {
 
         }
 
-        //this.dos.writeChar(0);
+        // this.dos.writeChar(0);
     }
 
 }
