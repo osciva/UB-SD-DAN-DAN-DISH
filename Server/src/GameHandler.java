@@ -80,9 +80,9 @@ public class GameHandler extends Thread {
                             }
                             if (gh.receivedAction(socket)) {
                                 gh.sendResult(socket);
-                                break;
                             }
                             String resp = gh.jocAcabat(socket);
+
                             switch (resp) {
                                 case "SI":
                                     isFinal = true;
