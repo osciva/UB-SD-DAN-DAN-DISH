@@ -34,13 +34,6 @@ public class ClientProtocol {
             utilitat.escriureInt(id);
             this.id = id;
             utilitat.escriureString(name);
-            /*
-             * for (int i = 0; i < name.length(); i++) {
-             * char p = name.charAt(i);
-             * utilitat.escriureChar(p);
-             * }
-             */
-
             System.out.println("HELLO C ------- " + opCode + " " + this.id + " " + name + "00 ---------> S");
 
             // data_outPut.close();
@@ -241,65 +234,31 @@ public class ClientProtocol {
                     System.out.println("Client ha disparat mentres Servidor recarregava --> Guanya Client");
                     this.contBales = 0;
                     break;
-                /*
-                 * case "DRAW0":
-                 * System.out.println("Ambdós jugadors han disparat --> Empat");
-                 * this.contBales = 0;
-                 * break;
-                 */
 
             }
             String resposta = "";
             System.out.println("Vols jugar una altra partida? (Si o No) ");
             System.out.println("Nova partida ");
-            //return 1;
 
-              Scanner sc = new Scanner(System.in);
-              resposta = sc.nextLine();
-              while (!resposta.equalsIgnoreCase("SI") && !resposta.equalsIgnoreCase("NO"))
-              {
-              System.out.println("Perdona, no t'he entés... ");
-              System.out.println("Vols jugar una altra partida? (Si o No) ");
-              sc = new Scanner(System.in);
-              resposta = sc.nextLine();
-              }
-              if (resposta.toUpperCase().equals("SI")) {
-              /*try {
-              utilitat.escriureAction("SI");
-              utilitat.ferFlush();
-              } catch (IOException e) {
-              throw new utilsError(e.getMessage());
-              }*/
-              return 1;
+            Scanner sc = new Scanner(System.in);
+            resposta = sc.nextLine();
+            while (!resposta.equalsIgnoreCase("SI") && !resposta.equalsIgnoreCase("NO")) {
+                System.out.println("Perdona, no t'he entés... ");
+                System.out.println("Vols jugar una altra partida? (Si o No) ");
+                sc = new Scanner(System.in);
+                resposta = sc.nextLine();
+            }
+            if (resposta.toUpperCase().equals("SI")) {
+                return 1;
 
-              } else {
-              /*try {
-              utilitat.escriureAction("NO");
-              utilitat.ferFlush();
-              return 2;
+            } else {
+                return 2;
+            }
 
-              } catch (IOException e) {
-              throw new utilsError(e.getMessage());
-              }*/
-                  return 2;
-              }
-
-        } else {/*
-            try {
-                utilitat.escriureAction("Segueix");
-                return 3;
-            } catch (IOException e) {
-                throw new utilsError(e.getMessage());
-            }*/
+        } else {
             return 3;
         }
-        /*
-         * try {
-         * socket.close();
-         * } catch (IOException e) {
-         * throw new RuntimeException(e);
-         * }
-         */
+
     }
 
     /*

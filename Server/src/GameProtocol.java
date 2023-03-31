@@ -31,24 +31,21 @@ public class GameProtocol {
     }
 
     public String receivedHello(Socket socket) throws utilsError {
-        try {// (DataInputStream data_inPut = new DataInputStream(socket.getInputStream())) {
+        try {
             byte opCode = utils.llegirByte();
             if (opCode != 1) {
                 byte error = 4;
                 // String msg = "INICI DE SESSIÓ INCORRECTE";
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
-                // return false;
                 return "ERROR";
 
             } else {
 
                 id = utils.llegirInt();
 
-                String name = utils.readElls();
+                String name = utils.readStringCorrect();
                 System.out.println(name + " wants to play ");
-                // HACER BUCLE WHILE QUE LEA HASTA QUE HAYA EL 0 DEL BUFFER
-
                 /*
                  * byte primer = utils.llegirByte();
                  * System.out.println(primer + "primer");
@@ -58,13 +55,11 @@ public class GameProtocol {
 
                 // System.out.println("The client sent the following message:\n" + opCode + id +
                 // name + buffer);
-                // data_inPut.close();
 
             }
         } catch (IOException e) {
             throw new utilsError("Error a receivedHello: " + e.getMessage());
         }
-        // return true;
         return "SEREADY";
     }
 
@@ -89,7 +84,7 @@ public class GameProtocol {
      * e.printStackTrace();
      * }
      * 
-     * } // AUN NO LO USAMOS PERO ES ASI, COMPROBADO QUE FUNCIONA
+     * }
      */
     public String sendReady(Socket socket) throws utilsError, IOException {
         try {
@@ -106,7 +101,6 @@ public class GameProtocol {
         } catch (IOException e) {
             utils.sendError((byte) 4);
             throw new utilsError("Error a sendReady: " + e.getMessage());
-
             /*
              * System.out.println("ERRCODE: 4, MSG: INICI DE SESSIÓ INCORRECTE ");
              * return "ERROR";
@@ -126,11 +120,8 @@ public class GameProtocol {
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
                 return "ERROR";
-                // return false;
             } else {
                 this.id = utils.llegirInt();
-
-                // data_inPut.close();
             }
         } catch (IOException e) {
             throw new utilsError("Error a receivedPlay: " + e.getMessage());
@@ -139,6 +130,7 @@ public class GameProtocol {
         return "SEADMIT";
 
     }
+
     public String receivedPlay2(Socket socket) throws utilsError {
         try {
             int opCode2 = utils.llegirInt();
@@ -151,11 +143,8 @@ public class GameProtocol {
                 // sendError(socket, (byte) 8, error, "INICI DE SESSIÓ INCORRECTE"); // msg);
                 System.out.println("Error al opCode");
                 return "ERROR";
-                // return false;
             } else {
                 this.id = utils.llegirInt();
-
-                // data_inPut.close();
             }
         } catch (IOException e) {
             throw new utilsError("Error a receivedPlay: " + e.getMessage());
@@ -270,7 +259,6 @@ public class GameProtocol {
                     }
                 }
             }
-            // String accioServer = "";
             this.result = "";
             String accioClient = this.accioRebuda.toUpperCase();
             System.out.println("La accio escollida per el server es: " + random + " = " + action);
@@ -283,9 +271,6 @@ public class GameProtocol {
                         this.result = "DRAW0"; // Client i Servidor disparen, empat
                         utils.escriureAction(this.result);
                         System.out.println("Client i Servidor disparen --> empat");
-                        // this.balesClient = 0;
-                        // this.finalInt = 2;
-                        // this.contBales = 0;
                         this.finalInt = 1;
                         utils.ferFlush();
                         break;
@@ -315,7 +300,6 @@ public class GameProtocol {
                     // accioServer = "BLOCK";
                     if (accioClient.equals("SHOOT")) {
                         this.result = "SAFE0"; // Client dispara, Servidor bloqueja.
-                        // this.balesClient -= 1;
                         utils.escriureAction(this.result);
                         System.out.println("Client dispara, Servidor bloqueja --> el joc segueix");
                         if (this.contBales == 1) {
@@ -327,7 +311,6 @@ public class GameProtocol {
                     } else if (accioClient.equals("CHARG")) {
                         this.result = "PLUS1"; // Client recarrega una bala perque servidor bloqueja
                         utils.escriureAction(this.result);
-                        // this.balesClient += 1;
                         System.out.println("Client recarrega una bala i servidor bloqueja --> el joc segueix");
                         if (this.contBales == 1) {
                             System.out.println("EL SERVIDOR SEGUEIX TENINT " + this.contBales + " BALA");
@@ -364,7 +347,6 @@ public class GameProtocol {
                     } else if (accioRebuda.toUpperCase().equals("CHARG")) {
                         this.result = "PLUS2"; // Client i Servidor recarreguen una bala
                         utils.escriureAction(this.result);
-                        // this.balesClient += 1;
                         System.out.println("Client i Servidor recarreguen una bala --> el joc segueix");
                         if (this.contBales == 1) {
                             System.out.println("EL SERVIDOR ARA TE " + this.contBales + " BALA");
@@ -386,8 +368,6 @@ public class GameProtocol {
                         utils.ferFlush();
                         break;
                     }
-                    // default:
-                    // System.out.println("Ha habido un error");
             }
 
         } catch (IOException e) {
@@ -397,19 +377,15 @@ public class GameProtocol {
     }
 
     public String jocAcabat(Socket socket) throws utilsError {
-        /*try {
-            String resp = utils.llegirAction();
-            return resp.toUpperCase();
-        } catch (IOException e) {
-            throw new utilsError("Error a jocAcabat: " + e.getMessage());
-        }*/
         if (result.equals("ENDS1") || result.equals("ENDS0")) {
-            /*try {
-                String prova = utils.llegirString();
-                System.out.println("EEEEEE"+ prova);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }*/
+            /*
+             * try {
+             * String prova = utils.llegirString();
+             * System.out.println("EEEEEE"+ prova);
+             * } catch (IOException e) {
+             * throw new RuntimeException(e);
+             * }
+             */
             return "SI";
         } else {
             return "SEGUEIX";

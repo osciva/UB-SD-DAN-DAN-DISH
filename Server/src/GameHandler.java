@@ -25,7 +25,8 @@ public class GameHandler extends Thread {
         while (true) {
             String message = null;
             try {
-                //Thread t = new Thread(new Client(socket)); //falta saber com poder passar Client
+                // Thread t = new Thread(new Client(socket)); //falta saber com poder passar
+                // Client
                 play();
                 /*
                  * DataInputStream data_input = new DataInputStream(socket.getInputStream());
@@ -61,9 +62,11 @@ public class GameHandler extends Thread {
                 case "REPLAY":
                     resposta = gh.receivedPlay(socket);
                     break;
-               /* case "REPLAY2":
-                    resposta = gh.receivedPlay2(socket);
-                    break;*/
+                /*
+                 * case "REPLAY2":
+                 * resposta = gh.receivedPlay2(socket);
+                 * break;
+                 */
                 case "SEADMIT":
                     resposta = gh.sendAdmit(socket);
                     break;
@@ -83,9 +86,9 @@ public class GameHandler extends Thread {
                             switch (resp) {
                                 case "SI":
                                     isFinal = true;
-                                    //gh.especial();
+                                    // gh.especial();
                                     resposta = "REPLAY";
-                                    //resposta = "REPLAY2";
+                                    // resposta = "REPLAY2";
                                     break;
                                 case "NO":
                                     isFinal = true;
@@ -98,46 +101,12 @@ public class GameHandler extends Thread {
                             }
 
                         }
-                    }catch (IOException error){
+                    } catch (IOException error) {
                         System.out.println("El client s'ha desconnectat");
                     }
-                }
             }
+        }
         System.out.println("S- [conexion closed]");
-        }
-        /*GameProtocol gh = new GameProtocol(socket);
-        boolean isFinal = false;
-        // gh.receivedHello(socket);
-        if (gh.receivedHello(socket)) {
-            gh.sendReady(socket);
-        }
-        if (gh.receivedPlay(socket)) {
-            gh.sendAdmit(socket);
-        }
-        while (socket.isConnected()) {
-            if(socket.isClosed() || isFinal){
-                break;
-            }
-            if (gh.receivedAction(socket)) {
-                gh.sendResult(socket);
-            }
-            String resp = gh.jocAcabat(socket);
-            switch (resp) {
-                case "SI":
-                    gh.receivedPlay(socket); // Debemos hacer que cuando llame al receivedPlay vuelva a hacerse toddo el protocolo
-                    isFinal = true;   // Posiblemente lo podemos conseguir con un bucle..
-                    break;
-                case "NO":
-                    socket.close();
-                    break;
-                default:
-                    System.out.println("seguim jugant");
-            }
-
-        }
-        if (gh.receivedError(socket)) {
-            System.out.println("Final del juego por error");
-        }
-    }*/
+    }
 
 }

@@ -184,7 +184,7 @@ public class util {
         this.dos.writeByte(opcode);
     }
 
-    public String readElls() throws IOException {
+    public String readStringCorrect() throws IOException {
         StringBuilder str = new StringBuilder();
 
         char c;
