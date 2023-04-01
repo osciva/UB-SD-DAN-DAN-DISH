@@ -169,8 +169,8 @@ public class util {
             char p = msg.charAt(i);
             this.dos.writeChar(p);
         }
-        this.dos.writeChar(0);
-        this.dos.writeChar(0);
+        this.dos.writeByte((byte)0);
+        this.dos.writeByte((byte)0);
 
     }
 
@@ -230,12 +230,10 @@ public class util {
 
     // escriure la acció
     public void escriureAction(String action) throws IOException {
-        String msg = action;
-        for (int i = 0; i < msg.length(); i++) {
-            char p = msg.charAt(i);
-            this.dos.writeChar(p);
 
-        }
+        dos.writeChars(action);
+
+        
 
         // this.dos.writeChar(0);
     }
