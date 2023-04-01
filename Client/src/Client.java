@@ -33,6 +33,7 @@ public class Client {
 
         try {
             socket = new Socket(host, port);
+            socket.setSoTimeout(30000);//30s per a connectar-se o saltarà error
             System.out.println("Client connected to server");
             System.out.println("C- [TCP Connect]");
         } catch (IllegalArgumentException e) {

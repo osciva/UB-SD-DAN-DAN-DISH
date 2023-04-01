@@ -18,6 +18,7 @@ public class ClientProtocol {
     public ClientProtocol(Socket socket) {
         this.socket = socket;
         try {
+            socket.setSoTimeout(60000); // 60 segundos de timeout
             data_outPut = new DataOutputStream(socket.getOutputStream());
             data_inPut = new DataInputStream(socket.getInputStream());
             utilitat = new util(socket);
