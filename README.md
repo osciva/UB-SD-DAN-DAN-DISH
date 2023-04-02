@@ -88,3 +88,9 @@ Quan vam arreglar aquests errors vam tornar a provar amb altres grups com l'A08,
 
 
 Vam poder completar el projecte fora de la classe de testing. La setmana següent, amb l'ajuda d'altres grups que ens van permetre runnejar, vam poder arreglar els errors resultants i provar amb 3 grups diferents si funcionava.
+
+  
+###### AUTORS
+  
+  -> IVAN MANSILLA FLORES 
+  -> OSCAR DE CARALT ROY 
