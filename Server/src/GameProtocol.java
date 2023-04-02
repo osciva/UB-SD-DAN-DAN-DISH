@@ -18,6 +18,7 @@ public class GameProtocol {
 
     public GameProtocol(Socket socket) {
         try {
+            socket.setSoTimeout(60000); // Añadir timeout de 60s al socket
             data_outPut = new DataOutputStream(socket.getOutputStream());
             data_inPut = new DataInputStream(socket.getInputStream());
             utils = new util(socket);
@@ -134,7 +135,7 @@ public class GameProtocol {
     public String receivedPlay2(Socket socket) throws utilsError {
         try {
             int opCode2 = utils.llegirInt();
-            System.out.println("AAAAAAAAAA" + opCode2);
+
             byte opCode = utils.llegirByte();
             if (opCode != 3) {
                 byte error = 4;

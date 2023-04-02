@@ -13,6 +13,7 @@ public class util {
     public util(Socket socket) throws IOException {
         dis = new DataInputStream(socket.getInputStream());
         dos = new DataOutputStream(socket.getOutputStream());
+        socket.setSoTimeout(30000); // espera un máximo de 30 segundos para recibir datos del socket
     }
 
     // getter del data input stream
@@ -51,7 +52,7 @@ public class util {
      */
     private final byte CARACTER_NO_RECONEGUT = 1,
             MISSATGE_DESCONEGUT = 2, MISSATGE_FORA_DE_PROTOCOL = 3, INICI_DE_SESSIO_INCORRECTE = 4,
-            PARAULA_DESCONEGUDA = 5, MISSATGE_MAL_FORMAT = 6, ERROR_DESCONEGUT = 99;
+            PARAULA_DESCONEGUDA = 5, MISSATGE_MAL_FORMAT = 6, ERROR_DESCONEGUT = 99, TIMEOUT = 10;
 
     public void sendError(byte errCode) throws IOException {
         String error = "";
@@ -68,6 +69,8 @@ public class util {
                 error = "PARAULA DESCONEGUDA";
             case MISSATGE_MAL_FORMAT:
                 error = "MISSATGE MAL FORMAT";
+            case TIMEOUT:
+                error = "TIMEOUT";
             default:
                 error = "ERROR DESCONEGUT";
         }

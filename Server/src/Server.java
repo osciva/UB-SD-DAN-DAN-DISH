@@ -30,6 +30,7 @@ public class Server {
 
         try {
             ss = new ServerSocket(port);
+            ss.setSoTimeout(45000); //timeout en ms
             System.out.println("Server up & listening on port "+port+"...\nPress Cntrl + C to stop.");
 
         } catch (IOException e) {
@@ -45,6 +46,7 @@ public class Server {
         while(true){
             try {
                 socket = ss.accept();
+                socket.setSoTimeout(120000); // Agregar 120s de timeout al socket aceptado
                 System.out.println("S- [TCP Accept]");
             } catch (IOException e) {
                 throw new utilsError("I/O error when accepting a client:\n" + e.getMessage());
