@@ -93,4 +93,5 @@ Vam poder completar el projecte fora de la classe de testing. La setmana següen
 ###### AUTORS
   
   -> IVAN MANSILLA FLORES 
+  
   -> OSCAR DE CARALT ROY 
